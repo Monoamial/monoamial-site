@@ -3,6 +3,7 @@
    ============================================================ */
 
 @import 'katex/dist/katex.min.css';
+@import './fonts.css'; /* self-hosted — see scripts/fetch-fonts.mjs */
 
 :root {
   /* Chalkboard palette */
@@ -70,6 +71,21 @@ body::before {
   position: relative;
   z-index: 1;
 }
+
+/* keyboard-accessible skip link (visually hidden until focused) */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--accent);
+  color: var(--board);
+  font-family: var(--font-hand);
+  font-size: 1.1rem;
+  padding: 0.4em 1em;
+  border-radius: 0 0 6px 0;
+}
+.skip-link:focus { left: 0; }
 
 /* ---------- Headings: chalk lettering ---------- */
 h1, h2, h3 {

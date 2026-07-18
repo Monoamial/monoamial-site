@@ -1,0 +1,16 @@
+# Parsed by Cloudflare Workers static assets (not served as a file).
+# https://developers.cloudflare.com/workers/static-assets/headers/
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Astro content-hashes everything under /_astro/ — safe to cache forever
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Self-hosted fonts never change without a filename change
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

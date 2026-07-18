@@ -92,26 +92,23 @@ const { size = 90, cell = 5 } = Astro.props as Props;
         return sum / spins.length;
       }
 
+      // one reusable offscreen canvas at lattice resolution; drawing is
+      // synchronous (no per-frame ImageBitmap allocation / promise churn)
+      const off = document.createElement('canvas');
+      off.width = N; off.height = N;
+      const offCtx = off.getContext('2d');
+
       function draw() {
-        const img = ctx.createImageData(N, N);
+        const img = offCtx.createImageData(N, N);
         for (let i = 0; i < spins.length; i++) {
           const v = spins[i] === 1 ? 242 : 40; // chalk white vs board-dark
           const o = i * 4;
           img.data[o] = v; img.data[o + 1] = v; img.data[o + 2] = v - (spins[i] === 1 ? 20 : -10);
           img.data[o + 3] = 255;
         }
-        // draw at native lattice resolution then scale up crisply
-        createImageBitmap(img).then((bmp) => {
-          ctx.imageSmoothingEnabled = false;
-          ctx.drawImage(bmp, 0, 0, canvas.width, canvas.height);
-        }).catch(() => {
-          // fallback path if createImageBitmap unsupported
-          const off = document.createElement('canvas');
-          off.width = N; off.height = N;
-          off.getContext('2d').putImageData(img, 0, 0);
-          ctx.imageSmoothingEnabled = false;
-          ctx.drawImage(off, 0, 0, canvas.width, canvas.height);
-        });
+        offCtx.putImageData(img, 0, 0);
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(off, 0, 0, canvas.width, canvas.height);
       }
 
       let raf;
