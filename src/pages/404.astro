@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Not found">
+  <div class="lost">
+    <h1>404</h1>
+    <p class="chalk-line">This corner of the board is blank &mdash; nothing&rsquo;s been chalked in here.</p>
+    <p><a href="/">&larr; back to the board</a></p>
+  </div>
+</Base>
+<style>
+  .lost { text-align: center; padding: 4rem 0; }
+  .lost h1 { font-size: clamp(4rem, 14vw, 8rem); color: var(--accent); margin: 0; }
+  .chalk-line { color: var(--chalk-dim); font-size: 1.2rem; }
+  .lost a { font-family: var(--font-hand); font-size: 1.3rem; }
+</style>

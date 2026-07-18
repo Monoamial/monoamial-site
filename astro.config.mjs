@@ -4,19 +4,14 @@ import sitemap from '@astrojs/sitemap';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
-import cloudflare from '@astrojs/cloudflare';
-
 // https://astro.build
 export default defineConfig({
-  // TODO: replace with your real domain once it's live on Cloudflare
   site: 'https://monoamial.com',
-
   integrations: [mdx(), sitemap()],
-
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],
   },
-
-  adapter: cloudflare(),
+  // Fully static site — deployed to Cloudflare as a Worker with Static
+  // Assets (see wrangler.jsonc), so no server adapter is needed here.
 });

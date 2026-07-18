@@ -1,12 +1,15 @@
 {
+	// Pure static-assets Worker: the whole site is prerendered by Astro,
+	// so no server entrypoint ("main") is needed at all — Cloudflare serves
+	// ./dist directly. This intentionally undoes Cloudflare's auto-config,
+	// which assumed an SSR deployment (@astrojs/cloudflare adapter) that
+	// this site doesn't use or need.
 	"$schema": "./node_modules/wrangler/config-schema.json",
-	"compatibility_date": "2026-07-18",
-	"compatibility_flags": ["global_fetch_strictly_public"],
-	"name": "borgnia-site",
-	"main": "@astrojs/cloudflare/entrypoints/server",
+	"name": "monoamial-site",
+	"compatibility_date": "2024-09-23",
 	"assets": {
 		"directory": "./dist",
-		"binding": "ASSETS"
+		"not_found_handling": "404-page"
 	},
 	"observability": {
 		"enabled": true
