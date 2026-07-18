@@ -1,0 +1,30 @@
+---
+const { href, title, date, description, tags = [], badges = [] } = Astro.props;
+const d = date
+  ? new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
+  : '';
+---
+<a href={href} class="note-card entry">
+  <div class="entry-head">
+    <h3>{title}</h3>
+    {d && <span class="meta">{d}</span>}
+  </div>
+  {description && <p>{description}</p>}
+  <div class="entry-foot">
+    {badges.map((b) => <span class="badge">{b}</span>)}
+    {tags.map((t) => <span class="tag">#{t}</span>)}
+  </div>
+</a>
+<style>
+  .entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .entry-head h3 { margin: 0; }
+  .entry-foot { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; margin-top: 0.7rem; }
+  .badge {
+    font-family: var(--font-hand);
+    font-size: 0.95rem;
+    color: var(--accent);
+    border: 1px solid var(--board-edge);
+    border-radius: 4px;
+    padding: 0 0.5em;
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('teaching', (e) => !e.data.draft))
+  .sort((a, b) => +b.data.date - +a.data.date);
+---
+<Base title="Teaching" description="Courses, problem sets, and teaching materials.">
+  <header class="page-head">
+    <h1>Teaching</h1>
+    <p class="sub">
+      Courses, problem sets, and notes built to make hard things feel
+      inevitable rather than miraculous.
+    </p>
+  </header>
+  <div class="list">
+    {entries.length === 0 && <p class="empty">Courses and materials will appear here.</p>}
+    {entries.map((e) => (
+      <EntryCard
+        href={`/teaching/${e.id}/`}
+        title={e.data.title}
+        date={e.data.date}
+        description={e.data.description}
+        tags={e.data.tags}
+        badges={[e.data.role, e.data.term].filter(Boolean)}
+      />
+    ))}
+  </div>
+</Base>
+<style>
+  .page-head { margin: 1.5rem 0 2rem; }
+  .sub { color: var(--chalk-dim); max-width: 60ch; font-size: 1.1rem; }
+  .list { display: grid; gap: 1.1rem; }
+  .empty { color: var(--chalk-faint); font-style: italic; }
+</style>

@@ -1,0 +1,280 @@
+/* ============================================================
+   Noam Borgnia — chalkboard / notebook theme
+   ============================================================ */
+
+@import 'katex/dist/katex.min.css';
+
+:root {
+  /* Chalkboard palette */
+  --board: #1f2a2e;            /* deep slate-green chalkboard */
+  --board-2: #25322f;
+  --board-edge: #3a4a45;
+  --chalk: #f2efe6;            /* warm chalk white */
+  --chalk-dim: #c9c8bd;
+  --chalk-faint: #8c9690;
+  --accent: #f4c95d;          /* yellow chalk */
+  --accent-2: #8fd3c4;        /* mint chalk */
+  --accent-3: #e88c8c;        /* coral chalk */
+  --wood: #6b4a2b;            /* tray / frame wood */
+  --wood-2: #57391f;
+
+  /* Typography */
+  --font-hand: 'Caveat', 'Bradley Hand', 'Comic Sans MS', cursive;
+  --font-serif: 'Spectral', Georgia, 'Times New Roman', serif;
+  --font-body: 'Spectral', Georgia, serif;
+
+  --maxw: 860px;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background: var(--wood-2);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--chalk);
+  line-height: 1.7;
+  /* The board itself, framed in wood */
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 0%, rgba(255,255,255,0.05), transparent 60%),
+    var(--board);
+  position: relative;
+  /* subtle chalk dust grain */
+  background-blend-mode: screen;
+}
+
+/* faint chalk-dust noise overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  z-index: 0;
+  background-image:
+    radial-gradient(rgba(255,255,255,0.5) 0.5px, transparent 0.5px),
+    radial-gradient(rgba(255,255,255,0.4) 0.5px, transparent 0.5px);
+  background-size: 7px 7px, 13px 13px;
+  background-position: 0 0, 4px 6px;
+}
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Headings: chalk lettering ---------- */
+h1, h2, h3 {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--chalk);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+  letter-spacing: 0.5px;
+}
+h1 { font-size: clamp(2.6rem, 6vw, 4.2rem); margin: 0.2em 0; }
+h2 { font-size: clamp(1.9rem, 4vw, 2.6rem); margin: 1.4em 0 0.4em; color: var(--accent); }
+h3 { font-size: 1.5rem; margin: 1.2em 0 0.3em; color: var(--accent-2); }
+
+p { margin: 0.8em 0; color: var(--chalk-dim); }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.25s ease;
+  padding-bottom: 1px;
+}
+a:hover { background-size: 100% 1.5px; }
+
+/* Hand-drawn underline used for emphasis */
+.chalk-underline {
+  position: relative;
+  display: inline-block;
+}
+.chalk-underline::after {
+  content: '';
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  bottom: -6px;
+  height: 8px;
+  background: no-repeat center/100% 100%
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12'%3E%3Cpath d='M2 7 C 40 2, 80 11, 120 6 S 180 3, 198 8' stroke='%23f4c95d' stroke-width='2.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  opacity: 0.9;
+}
+
+code, pre, kbd {
+  font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+code {
+  background: rgba(0,0,0,0.25);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  font-size: 0.88em;
+  color: var(--accent-2);
+}
+pre {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--board-edge);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+pre code { background: none; padding: 0; color: var(--chalk-dim); }
+
+blockquote {
+  border-left: 3px solid var(--accent);
+  margin: 1.2em 0;
+  padding: 0.2em 1.2em;
+  color: var(--chalk-dim);
+  font-style: italic;
+}
+
+hr {
+  border: none;
+  height: 2px;
+  margin: 2.5rem 0;
+  background: no-repeat center/100% 100%
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 8'%3E%3Cpath d='M2 4 C 60 1, 140 7, 200 4 S 340 1, 398 5' stroke='%233a4a45' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* KaTeX should glow faintly like chalk */
+.katex { color: var(--chalk); font-size: 1.05em; }
+.katex-display {
+  margin: 1.4em 0;
+  padding: 0.4em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* selection */
+::selection { background: var(--accent); color: var(--board); }
+
+/* ---------- reusable card (a pinned note) ---------- */
+.note-card {
+  display: block;
+  background: linear-gradient(180deg, var(--board-2), rgba(0,0,0,0.15));
+  border: 1px solid var(--board-edge);
+  border-radius: 10px;
+  padding: 1.3rem 1.5rem;
+  color: inherit;
+  background-image: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+.note-card:hover {
+  transform: translateY(-3px) rotate(-0.4deg);
+  border-color: var(--accent);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.35);
+}
+.note-card h3 { margin-top: 0; }
+.note-card .meta { font-size: 0.85rem; color: var(--chalk-faint); }
+
+.tag {
+  display: inline-block;
+  font-family: var(--font-hand);
+  font-size: 1rem;
+  color: var(--board);
+  background: var(--accent-2);
+  border-radius: 4px;
+  padding: 0 0.5em;
+  margin-right: 0.3em;
+  transform: rotate(-1.5deg);
+}
+
+/* ---------- simulation controls (shared across src/components/sims/*) ---------- */
+.sim-canvas-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid var(--board-edge);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.sim-canvas-wrap canvas { display: block; max-width: 100%; height: auto; }
+
+.sim-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.6rem;
+  align-items: center;
+  font-family: var(--font-hand);
+  font-size: 1.1rem;
+  color: var(--chalk-dim);
+}
+.sim-controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+.sim-controls input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 130px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--board-edge);
+  outline: none;
+}
+.sim-controls input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--board);
+  cursor: pointer;
+}
+.sim-controls input[type='range']::-moz-range-thumb {
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--board);
+  cursor: pointer;
+}
+.sim-controls .val {
+  color: var(--accent);
+  min-width: 2.6em;
+  display: inline-block;
+}
+.sim-btn {
+  font-family: var(--font-hand);
+  font-size: 1.1rem;
+  color: var(--chalk);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--board-edge);
+  border-radius: 6px;
+  padding: 0.25em 0.9em;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.sim-btn:hover { border-color: var(--accent); color: var(--accent); }
+.sim-btn:active { transform: translateY(1px); }
+.sim-readout {
+  display: flex;
+  gap: 1.4rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.9rem;
+  color: var(--accent-2);
+}
+.sim-readout .val { color: var(--chalk); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}

@@ -1,0 +1,30 @@
+---
+const year = new Date().getFullYear();
+const links = [
+  { href: 'mailto:your-email@monoamial.com', label: 'Email' },
+  { href: 'https://github.com/', label: 'GitHub' },
+  { href: 'https://scholar.google.com/', label: 'Scholar' },
+  { href: 'https://arxiv.org/', label: 'arXiv' },
+];
+---
+<footer>
+  <div class="wrap foot-inner">
+    <p class="sig">Noam Borgnia · {year}</p>
+    <nav class="foot-links">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+    <p class="builtwith">Chalk on slate. Built with Astro + KaTeX.</p>
+  </div>
+</footer>
+<style>
+  footer {
+    margin-top: 5rem;
+    border-top: 1px solid var(--board-edge);
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.18));
+  }
+  .foot-inner { padding: 2.2rem 1.5rem 3rem; text-align: center; }
+  .sig { font-family: var(--font-hand); font-size: 1.5rem; color: var(--chalk); margin: 0; }
+  .foot-links { display: flex; gap: 1.4rem; justify-content: center; margin: 0.8rem 0; flex-wrap: wrap; }
+  .foot-links a { font-family: var(--font-hand); font-size: 1.15rem; }
+  .builtwith { font-size: 0.8rem; color: var(--chalk-faint); margin: 0; }
+</style>

@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('writing', (e) => !e.data.draft))
+  .sort((a, b) => +b.data.date - +a.data.date);
+---
+<Base title="Writing" description="Expository notes, essays, and ideas.">
+  <header class="page-head">
+    <h1>Writing</h1>
+    <p class="sub">
+      Expository notes and essays &mdash; the place where I explain ideas to
+      myself until they hold still.
+    </p>
+  </header>
+  <div class="list">
+    {entries.length === 0 && <p class="empty">Essays and notes will appear here.</p>}
+    {entries.map((e) => (
+      <EntryCard
+        href={`/writing/${e.id}/`}
+        title={e.data.title}
+        date={e.data.date}
+        description={e.data.description}
+        tags={e.data.tags}
+      />
+    ))}
+  </div>
+</Base>
+<style>
+  .page-head { margin: 1.5rem 0 2rem; }
+  .sub { color: var(--chalk-dim); max-width: 60ch; font-size: 1.1rem; }
+  .list { display: grid; gap: 1.1rem; }
+  .empty { color: var(--chalk-faint); font-style: italic; }
+</style>

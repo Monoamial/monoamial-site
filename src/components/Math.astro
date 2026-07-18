@@ -1,0 +1,22 @@
+---
+/*
+  Server-rendered math. Renders LaTeX to static HTML/CSS at build time via
+  KaTeX's own renderer — no client-side script, no CDN dependency, so it
+  always renders (works offline, no flash of raw TeX).
+*/
+import katex from 'katex';
+
+interface Props {
+  tex: string;
+  display?: boolean;
+}
+const { tex, display = false } = Astro.props as Props;
+
+let html: string;
+try {
+  html = katex.renderToString(tex, { displayMode: display, throwOnError: false, output: 'html' });
+} catch (err) {
+  html = `<code>${tex}</code>`;
+}
+---
+<Fragment set:html={html} />

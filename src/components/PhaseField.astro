@@ -1,0 +1,245 @@
+---
+/*
+  PhaseField — a lightweight, dependency-free canvas that scatters points
+  and advects them along a vector field (a nod to dynamical systems on the
+  chalkboard). Drawn in chalk strokes. Respects reduced-motion.
+
+  Easter egg: the cursor perturbs the field like a small vortex, and
+  left/right click drop a source/sink (a point of positive/negative
+  divergence) that the flow responds to for a little while.
+*/
+---
+<canvas id="phasefield" aria-hidden="true"></canvas>
+<script is:inline>
+  (() => {
+    const canvas = document.getElementById('phasefield');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let W, H, DPR, particles = [];
+    const N = reduce ? 90 : 220;
+
+    // cursor-driven local vortex
+    const cursor = { x: 0, y: 0, active: false };
+    // click-planted sources (sign +1) / sinks (sign -1)
+    const wells = [];
+    const WELL_LIFESPAN = 16000; // ms
+    const WELL_FADE = 2000; // ms tail at the end of life
+    const MAX_WELLS = 8;
+
+    function resize() {
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      const r = canvas.getBoundingClientRect();
+      W = r.width; H = r.height;
+      canvas.width = W * DPR; canvas.height = H * DPR;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+
+    function seed() {
+      particles = Array.from({ length: N }, () => ({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        life: Math.random() * 100,
+      }));
+    }
+
+    function wellEnvelope(w, now) {
+      const age = now - w.born;
+      if (age < 0 || age > w.lifespan) return 0;
+      const fadeIn = Math.min(1, age / 400);
+      const remain = w.lifespan - age;
+      const fadeOut = remain < WELL_FADE ? Math.max(0, remain / WELL_FADE) : 1;
+      return fadeIn * fadeOut;
+    }
+
+    function addWell(x, y, sign) {
+      wells.push({ x, y, sign, born: performance.now(), lifespan: WELL_LIFESPAN });
+      if (wells.length > MAX_WELLS) wells.shift();
+      requestRender();
+    }
+
+    // A smooth, swirling vector field (curl-noise-ish, cheap analytic form),
+    // plus a cursor vortex and any planted sources/sinks.
+    function field(x, y, t, now) {
+      const s = 0.0032;
+      let ax = Math.sin(x * s + t) + Math.cos(y * s * 1.3 - t * 0.7);
+      let ay = Math.cos(x * s * 1.1 - t * 0.5) - Math.sin(y * s + t * 0.3);
+
+      if (cursor.active) {
+        const dx = x - cursor.x, dy = y - cursor.y;
+        const d2 = dx * dx + dy * dy;
+        const radius = 170;
+        if (d2 < radius * radius) {
+          const d = Math.sqrt(d2) + 0.001;
+          const falloff = 1 - d / radius;
+          const tx = -dy / d, ty = dx / d; // tangential: swirl around the cursor
+          const strength = 2.4 * falloff * falloff;
+          ax += tx * strength - (dx / d) * 0.35 * falloff;
+          ay += ty * strength - (dy / d) * 0.35 * falloff;
+        }
+      }
+
+      for (const w of wells) {
+        const env = wellEnvelope(w, now);
+        if (env <= 0) continue;
+        const dx = x - w.x, dy = y - w.y;
+        const d2 = dx * dx + dy * dy;
+        const d = Math.sqrt(d2) + 6;
+        const inv = (w.sign * 7.5 * env * 4200) / (d2 + 4200);
+        ax += (dx / d) * inv;
+        ay += (dy / d) * inv;
+      }
+
+      return [ax, ay];
+    }
+
+    function drawWellMarker(w, now) {
+      const env = wellEnvelope(w, now);
+      if (env <= 0) return;
+      const r = 9 + Math.sin((now - w.born) * 0.005) * 2;
+      ctx.save();
+      ctx.globalAlpha = 0.55 * env;
+      ctx.strokeStyle = w.sign > 0 ? 'hsl(45, 70%, 72%)' : 'hsl(190, 55%, 72%)';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.arc(w.x, w.y, r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(w.x - 4, w.y);
+      ctx.lineTo(w.x + 4, w.y);
+      if (w.sign > 0) { ctx.moveTo(w.x, w.y - 4); ctx.lineTo(w.x, w.y + 4); }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    let t = 0, raf;
+    function simulateAndDraw() {
+      const now = performance.now();
+      t += 0.0024;
+      // chalk-dust fade instead of hard clear
+      ctx.fillStyle = 'rgba(31,42,46,0.08)';
+      ctx.fillRect(0, 0, W, H);
+      ctx.lineCap = 'round';
+      for (const p of particles) {
+        const [vx, vy] = field(p.x, p.y, t, now);
+        const nx = p.x + vx * 0.9;
+        const ny = p.y + vy * 0.9;
+        const speed = Math.hypot(vx, vy);
+        const hue = 45 + speed * 18;
+        ctx.strokeStyle = `hsla(${hue}, 55%, ${70 - speed * 6}%, 0.5)`;
+        ctx.lineWidth = 1.1;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(nx, ny);
+        ctx.stroke();
+        p.x = nx; p.y = ny; p.life -= 1;
+
+        // swallowed by a nearby sink, or wandered off / expired -> respawn
+        let swallowed = false;
+        for (const w of wells) {
+          if (w.sign < 0 && wellEnvelope(w, now) > 0) {
+            const dx = p.x - w.x, dy = p.y - w.y;
+            if (dx * dx + dy * dy < 130) { swallowed = true; break; }
+          }
+        }
+        if (swallowed || p.life < 0 || p.x < 0 || p.x > W || p.y < 0 || p.y > H) {
+          p.x = Math.random() * W; p.y = Math.random() * H; p.life = 60 + Math.random() * 80;
+        }
+      }
+      for (const w of wells) drawWellMarker(w, now);
+      // prune dead wells
+      for (let i = wells.length - 1; i >= 0; i--) {
+        if (now - wells[i].born > wells[i].lifespan) wells.splice(i, 1);
+      }
+    }
+
+    function loop() {
+      simulateAndDraw();
+      raf = requestAnimationFrame(loop);
+    }
+
+    // for reduced-motion visitors we don't run a continuous loop, but we
+    // still redraw a single frame in response to interaction so the egg
+    // stays discoverable without introducing constant animation.
+    let pendingRender = false;
+    function requestRender() {
+      if (!reduce || pendingRender) return;
+      pendingRender = true;
+      requestAnimationFrame(() => { pendingRender = false; simulateAndDraw(); });
+    }
+
+    function start() {
+      resize(); seed();
+      ctx.fillStyle = 'rgba(31,42,46,1)';
+      ctx.fillRect(0, 0, W, H);
+      cancelAnimationFrame(raf);
+      if (reduce) simulateAndDraw();
+      else loop();
+    }
+
+    window.addEventListener('resize', () => { resize(); seed(); });
+
+    function pointerPos(e) {
+      const r = canvas.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      const p = pointerPos(e);
+      cursor.x = p.x; cursor.y = p.y; cursor.active = true;
+      requestRender();
+    });
+    canvas.addEventListener('mouseleave', () => { cursor.active = false; requestRender(); });
+    canvas.addEventListener('click', (e) => {
+      const p = pointerPos(e);
+      addWell(p.x, p.y, +1);
+    });
+    canvas.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      const p = pointerPos(e);
+      addWell(p.x, p.y, -1);
+    });
+
+    // basic touch parity: tap plants a source, long-press plants a sink
+    let touchStart = null;
+    canvas.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      const r = canvas.getBoundingClientRect();
+      const x = touch.clientX - r.left, y = touch.clientY - r.top;
+      cursor.x = x; cursor.y = y; cursor.active = true;
+      touchStart = { x, y, time: performance.now() };
+      requestRender();
+    }, { passive: true });
+    canvas.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      const r = canvas.getBoundingClientRect();
+      cursor.x = touch.clientX - r.left; cursor.y = touch.clientY - r.top;
+      requestRender();
+    }, { passive: true });
+    canvas.addEventListener('touchend', () => {
+      if (touchStart) {
+        const held = performance.now() - touchStart.time;
+        addWell(touchStart.x, touchStart.y, held > 450 ? -1 : +1);
+      }
+      touchStart = null;
+      cursor.active = false;
+    }, { passive: true });
+
+    start();
+  })();
+</script>
+<style>
+  #phasefield {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    border-radius: 14px;
+    opacity: 0.85;
+    cursor: crosshair;
+  }
+</style>

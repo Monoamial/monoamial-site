@@ -1,0 +1,139 @@
+---
+import Base from '../layouts/Base.astro';
+import PhaseField from '../components/PhaseField.astro';
+import Math from '../components/Math.astro';
+
+const pillars = [
+  {
+    href: '/research/',
+    kicker: '01',
+    title: 'Research',
+    blurb: 'Geometric probability theory applied to dynamical systems in statistical physics and quantum information.',
+    accent: 'var(--accent)',
+  },
+  {
+    href: '/code/',
+    kicker: '02',
+    title: 'Code & Simulation',
+    blurb: 'Numerical experiments, Monte Carlo, and visualizations \u2014 the lab notebook where theory meets the machine.',
+    accent: 'var(--accent-2)',
+  },
+  {
+    href: '/writing/',
+    kicker: '03',
+    title: 'Writing',
+    blurb: 'Expository notes, essays, and half-formed ideas chalked out in the margins.',
+    accent: 'var(--accent-3)',
+  },
+  {
+    href: '/teaching/',
+    kicker: '04',
+    title: 'Teaching',
+    blurb: 'Courses, problem sets, and materials built to make hard things feel inevitable.',
+    accent: '#bda7e8',
+  },
+];
+---
+<Base title={null}>
+  <section class="hero">
+    <div class="board-frame">
+      <PhaseField />
+      <div class="hero-text">
+        <p class="eyebrow">Master&rsquo;s student · Mathematical Physics</p>
+        <h1>Noam <span class="chalk-underline">Borgnia</span></h1>
+        <p class="lede">
+          I study <strong>geometric probability theory</strong> as applied to
+          dynamical systems in statistical physics and quantum information.
+        </p>
+        <p class="equation-note">
+          where order emerges from
+          <span class="ineq"><Math tex={"\\langle \\mathcal{O} \\rangle = \\lim_{T\\to\\infty} \\tfrac{1}{T}\\int_0^T \\mathcal{O}(\\phi_t\\,x)\\,dt"} /></span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="pillars">
+    {pillars.map((p) => (
+      <a href={p.href} class="note-card pillar" style={`--c:${p.accent}`}>
+        <span class="kicker">{p.kicker}</span>
+        <h3>{p.title}</h3>
+        <p>{p.blurb}</p>
+        <span class="go">open &rarr;</span>
+      </a>
+    ))}
+  </section>
+
+  <section class="intro">
+    <h2>The board</h2>
+    <p>
+      This site is a working chalkboard. The research is the main theorem; the
+      code is the scratch work that convinced me it was true; the writing is how
+      I explain it to myself; and the teaching is how I explain it to everyone
+      else. Pick a corner of the board and start reading.
+    </p>
+  </section>
+</Base>
+
+<style>
+  .hero { margin: 1.8rem 0 2.5rem; }
+  .board-frame {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 10px solid;
+    border-image: linear-gradient(135deg, var(--wood), var(--wood-2)) 1;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.45), inset 0 0 60px rgba(0,0,0,0.35);
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+  }
+  .hero-text {
+    position: relative;
+    z-index: 2;
+    padding: 2.5rem clamp(1.2rem, 4vw, 3rem);
+    /* lets clicks/hover reach the canvas underneath everywhere except the text itself */
+    pointer-events: none;
+  }
+  .hero-text a { pointer-events: auto; }
+  .eyebrow {
+    font-family: var(--font-hand);
+    font-size: 1.3rem;
+    color: var(--accent-2);
+    margin: 0 0 0.2rem;
+  }
+  .hero h1 { font-size: clamp(3rem, 9vw, 5.5rem); margin: 0; }
+  .lede { font-size: clamp(1.1rem, 2.4vw, 1.45rem); max-width: 32ch; color: var(--chalk); }
+  .lede strong { color: var(--accent); font-weight: 600; }
+  .equation-note {
+    font-family: var(--font-hand);
+    font-size: 1.2rem;
+    color: var(--chalk-faint);
+    margin-top: 1.2rem;
+  }
+  .ineq { display: inline-block; margin-left: 0.3rem; }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.2rem;
+    margin: 2rem 0;
+  }
+  .pillar { position: relative; border-top: 3px solid var(--c); }
+  .pillar .kicker {
+    font-family: var(--font-hand);
+    font-size: 1.1rem;
+    color: var(--c);
+    opacity: 0.8;
+  }
+  .pillar h3 { color: var(--c); margin: 0.1em 0 0.3em; }
+  .pillar .go {
+    font-family: var(--font-hand);
+    font-size: 1.1rem;
+    color: var(--chalk-faint);
+  }
+  .pillar:hover .go { color: var(--c); }
+
+  .intro { margin: 3rem 0 1rem; }
+</style>
+

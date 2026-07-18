@@ -1,0 +1,161 @@
+---
+/*
+  IsingSim — a real, running 2D Ising model (single-spin Metropolis
+  dynamics) on a periodic lattice, drawn to canvas and driven entirely by
+  client-side JS. Drag the temperature slider through T_c ≈ 2.269 and
+  watch the phase transition happen live.
+
+  This is the reference pattern for a "live" simulation: a self-contained
+  Astro component with an inline (is:inline, unbundled) script scoped to
+  its own instance via `document.currentScript`, so you can drop more than
+  one on a page. Copy this file as a starting point for a new sim.
+*/
+import SimFrame from './SimFrame.astro';
+
+interface Props {
+  size?: number;   // lattice side length
+  cell?: number;   // pixel size per spin
+}
+const { size = 90, cell = 5 } = Astro.props as Props;
+---
+<SimFrame title="2D Ising model — Metropolis dynamics" kind="live">
+  <div class="sim-canvas-wrap">
+    <canvas class="ising-canvas" width={size * cell} height={size * cell}></canvas>
+  </div>
+  <div class="sim-controls">
+    <label>
+      Temperature <span class="val temp-val">2.27</span>
+      <input class="temp-slider" type="range" min="1.2" max="4.0" step="0.01" value="2.27" />
+    </label>
+    <button class="sim-btn play-btn" type="button">Pause</button>
+    <button class="sim-btn reset-btn" type="button">Reset</button>
+    <div class="sim-readout">
+      <span>⟨m⟩ = <span class="val m-val">–</span></span>
+      <span>sweep <span class="val sweep-val">0</span></span>
+    </div>
+  </div>
+  <Fragment slot="caption">
+    Single-spin Metropolis updates on a {size}×{size} periodic lattice, J = 1,
+    k<sub>B</sub> = 1. The critical temperature is
+    T<sub>c</sub> = 2/ln(1+√2) ≈ 2.269 — the point where large-scale order
+    suddenly appears as you cool through it.
+  </Fragment>
+
+  <script is:inline define:vars={{ size, cell }}>
+    (() => {
+      const root = document.currentScript.closest('.sim-frame');
+      if (!root) return;
+      const canvas = root.querySelector('.ising-canvas');
+      const ctx = canvas.getContext('2d');
+      const tempSlider = root.querySelector('.temp-slider');
+      const tempVal = root.querySelector('.temp-val');
+      const playBtn = root.querySelector('.play-btn');
+      const resetBtn = root.querySelector('.reset-btn');
+      const mVal = root.querySelector('.m-val');
+      const sweepVal = root.querySelector('.sweep-val');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const N = size;
+      let spins = new Int8Array(N * N);
+      let T = parseFloat(tempSlider.value);
+      let sweeps = 0;
+      let playing = !reduceMotion;
+
+      function idx(x, y) { return y * N + x; }
+      function initRandom() {
+        for (let i = 0; i < spins.length; i++) spins[i] = Math.random() < 0.5 ? 1 : -1;
+        sweeps = 0;
+      }
+      initRandom();
+
+      function sweep() {
+        // N*N single-site Metropolis flips per sweep
+        for (let k = 0; k < N * N; k++) {
+          const x = (Math.random() * N) | 0;
+          const y = (Math.random() * N) | 0;
+          const s = spins[idx(x, y)];
+          const up = spins[idx(x, (y - 1 + N) % N)];
+          const down = spins[idx(x, (y + 1) % N)];
+          const left = spins[idx((x - 1 + N) % N, y)];
+          const right = spins[idx((x + 1) % N, y)];
+          const dE = 2 * s * (up + down + left + right);
+          if (dE <= 0 || Math.random() < Math.exp(-dE / T)) {
+            spins[idx(x, y)] = -s;
+          }
+        }
+        sweeps++;
+      }
+
+      function magnetization() {
+        let sum = 0;
+        for (let i = 0; i < spins.length; i++) sum += spins[i];
+        return sum / spins.length;
+      }
+
+      function draw() {
+        const img = ctx.createImageData(N, N);
+        for (let i = 0; i < spins.length; i++) {
+          const v = spins[i] === 1 ? 242 : 40; // chalk white vs board-dark
+          const o = i * 4;
+          img.data[o] = v; img.data[o + 1] = v; img.data[o + 2] = v - (spins[i] === 1 ? 20 : -10);
+          img.data[o + 3] = 255;
+        }
+        // draw at native lattice resolution then scale up crisply
+        createImageBitmap(img).then((bmp) => {
+          ctx.imageSmoothingEnabled = false;
+          ctx.drawImage(bmp, 0, 0, canvas.width, canvas.height);
+        }).catch(() => {
+          // fallback path if createImageBitmap unsupported
+          const off = document.createElement('canvas');
+          off.width = N; off.height = N;
+          off.getContext('2d').putImageData(img, 0, 0);
+          ctx.imageSmoothingEnabled = false;
+          ctx.drawImage(off, 0, 0, canvas.width, canvas.height);
+        });
+      }
+
+      let raf;
+      function loop() {
+        sweep();
+        draw();
+        mVal.textContent = magnetization().toFixed(3);
+        sweepVal.textContent = String(sweeps);
+        if (playing) raf = requestAnimationFrame(loop);
+      }
+
+      function start() {
+        cancelAnimationFrame(raf);
+        if (playing) raf = requestAnimationFrame(loop);
+        else draw();
+      }
+
+      tempSlider.addEventListener('input', () => {
+        T = parseFloat(tempSlider.value);
+        tempVal.textContent = T.toFixed(2);
+      });
+      playBtn.addEventListener('click', () => {
+        playing = !playing;
+        playBtn.textContent = playing ? 'Pause' : 'Play';
+        if (playing) start();
+      });
+      resetBtn.addEventListener('click', () => {
+        initRandom();
+        draw();
+        mVal.textContent = magnetization().toFixed(3);
+        sweepVal.textContent = '0';
+      });
+
+      playBtn.textContent = playing ? 'Pause' : 'Play';
+      draw();
+      start();
+
+      // pause when scrolled off-screen to save battery/CPU
+      const io = new IntersectionObserver(([entry]) => {
+        if (!playing) return;
+        if (entry.isIntersecting) start();
+        else cancelAnimationFrame(raf);
+      }, { threshold: 0.05 });
+      io.observe(canvas);
+    })();
+  </script>
+</SimFrame>

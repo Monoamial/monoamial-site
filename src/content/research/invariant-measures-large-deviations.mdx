@@ -1,0 +1,34 @@
+---
+title: "Large deviations for invariant measures of perturbed flows"
+description: "A geometric reading of the rate function controlling rare events in slowly perturbed dynamical systems."
+date: 2026-05-12
+status: "in progress"
+tags: ["large-deviations", "ergodic-theory", "geometry"]
+coauthors: []
+---
+
+We study a flow $\phi_t$ on a compact manifold $M$ with a unique invariant
+measure $\mu$, and ask how empirical averages concentrate. The central object
+is the **rate function** $I$ governing
+
+$$
+\mathbb{P}\!\left( \tfrac{1}{T}\int_0^T \delta_{\phi_t x}\,dt \approx \nu \right)
+\asymp e^{-T\, I(\nu)}, \qquad T \to \infty.
+$$
+
+## A geometric form of the rate function
+
+When the perturbation is gradient-like, $I$ admits a clean variational form,
+
+$$
+I(\nu) = \sup_{u \in C^1(M)} \int_M \left( \mathcal{L}u - \tfrac{1}{2}\,\Gamma(u,u) \right) d\nu,
+$$
+
+where $\Gamma$ is the *carré du champ* operator. The geometry enters through
+$\Gamma$: curvature lower bounds translate, via Bakry–Émery, into quantitative
+concentration.
+
+> The slogan: **curvature controls rare events.**
+
+This note collects the estimates I'm currently trying to make uniform in the
+perturbation strength $\varepsilon$.

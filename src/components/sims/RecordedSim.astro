@@ -1,0 +1,49 @@
+---
+/*
+  RecordedSim — for simulations too expensive to run client-side (PDE
+  solves, large N-body runs, anything that took a cluster and not a
+  browser tab). Show the precomputed output as video, with an optional
+  link to the raw data/notebook so it stays reproducible.
+
+  Usage inside an .mdx entry:
+    import RecordedSim from '../../components/sims/RecordedSim.astro';
+    <RecordedSim
+      title="Vortex shedding, Re = 4000"
+      video="/sims/vortex.mp4"
+      poster="/sims/vortex-poster.jpg"
+      dataHref="https://github.com/you/repo/tree/main/data"
+    >
+      Caption text here.
+    </RecordedSim>
+*/
+import SimFrame from './SimFrame.astro';
+
+interface Props {
+  title?: string;
+  video?: string;   // path to .mp4/.webm
+  gif?: string;     // alternative: an animated gif/apng
+  poster?: string;  // poster frame shown before play
+  dataHref?: string; // link to raw data / notebook / repo
+}
+const { title, video, gif, poster, dataHref } = Astro.props as Props;
+---
+<SimFrame title={title} kind="recorded">
+  <div class="sim-canvas-wrap recorded">
+    {video && (
+      <video controls loop muted playsinline poster={poster}>
+        <source src={video} />
+      </video>
+    )}
+    {!video && gif && <img src={gif} alt={title ?? 'simulation'} />}
+  </div>
+  {dataHref && (
+    <div class="sim-controls">
+      <a class="sim-btn" href={dataHref} target="_blank" rel="noopener">Data &amp; notebook &rarr;</a>
+    </div>
+  )}
+  <Fragment slot="caption"><slot /></Fragment>
+</SimFrame>
+
+<style>
+  .recorded video, .recorded img { width: 100%; height: auto; display: block; }
+</style>

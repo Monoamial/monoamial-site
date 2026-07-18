@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://monoamial.com/sitemap-index.xml

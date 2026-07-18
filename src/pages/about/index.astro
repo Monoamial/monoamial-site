@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="About">
+  <header class="page-head">
+    <h1>About</h1>
+  </header>
+  <div class="about">
+    <p class="lead">
+      I&rsquo;m <strong>Noam Borgnia</strong>, a master&rsquo;s student in
+      mathematical physics. My research lives at the intersection of
+      <em>geometric probability theory</em> and <em>dynamical systems</em>,
+      with applications in statistical physics and quantum information.
+    </p>
+    <p>
+      I&rsquo;m interested in how geometric and probabilistic structure &mdash;
+      invariant measures, curvature, large deviations, entropy &mdash; controls
+      the long-time behavior of physical systems, and how those same ideas
+      reappear when we ask what a quantum system can know about itself.
+    </p>
+
+    <h2>Currently</h2>
+    <ul class="plain">
+      <li>Master&rsquo;s research in geometric probability &amp; dynamical systems.</li>
+      <li>Building simulations to test conjectures before proving them.</li>
+      <li>Writing expository notes as I learn.</li>
+    </ul>
+
+    <h2>Elsewhere</h2>
+    <p class="links">
+      <a href="mailto:your-email@monoamial.com">Email</a>
+      <a href="https://github.com/">GitHub</a>
+      <a href="https://scholar.google.com/">Google Scholar</a>
+      <a href="https://arxiv.org/">arXiv</a>
+    </p>
+
+    <p class="cv"><a href="/cv.pdf">Download CV (PDF)</a></p>
+  </div>
+</Base>
+<style>
+  .page-head { margin: 1.5rem 0 1rem; }
+  .about { max-width: 64ch; }
+  .lead { font-size: 1.25rem; color: var(--chalk); }
+  .lead strong { color: var(--accent); }
+  .plain { list-style: none; padding: 0; }
+  .plain li { padding-left: 1.4em; position: relative; margin: 0.4em 0; color: var(--chalk-dim); }
+  .plain li::before { content: '\2192'; position: absolute; left: 0; color: var(--accent-2); }
+  .links { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+  .links a { font-family: var(--font-hand); font-size: 1.2rem; }
+  .cv { margin-top: 1.5rem; }
+</style>

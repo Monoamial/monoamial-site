@@ -1,0 +1,48 @@
+---
+title: "Wolff cluster Monte Carlo for the 2D Ising model"
+description: "A from-scratch cluster algorithm that beats critical slowing down, with a live magnetization sweep across the critical temperature."
+date: 2026-04-02
+stack: ["Python", "NumPy", "Numba"]
+tags: ["monte-carlo", "phase-transitions", "statistical-physics"]
+repo: "https://github.com/"
+---
+import IsingSim from '../../components/sims/IsingSim.astro';
+
+Drag the temperature through the critical point below — this is a real
+Metropolis simulation running in your browser, not a video.
+
+<IsingSim />
+
+Near the critical temperature $T_c$, single-spin Metropolis updates suffer from
+**critical slowing down**: the autocorrelation time diverges as
+$\tau \sim \xi^{z}$ with $z \approx 2.17$. The Wolff algorithm grows clusters
+and flips them together, driving $z$ close to $0$.
+
+A bond between aligned neighbors is added with probability
+
+$$
+p = 1 - e^{-2\beta J}.
+$$
+
+```python
+def wolff_step(spins, beta, J=1.0):
+    L = spins.shape[0]
+    p = 1 - np.exp(-2 * beta * J)
+    i, j = np.random.randint(L, size=2)
+    sign = spins[i, j]
+    stack, cluster = [(i, j)], {(i, j)}
+    while stack:
+        x, y = stack.pop()
+        for dx, dy in ((1,0),(-1,0),(0,1),(0,-1)):
+            nx, ny = (x+dx) % L, (y+dy) % L
+            if (nx, ny) not in cluster and spins[nx, ny] == sign \
+               and np.random.random() < p:
+                cluster.add((nx, ny)); stack.append((nx, ny))
+    for (x, y) in cluster:
+        spins[x, y] = -sign
+    return spins
+```
+
+The exact critical point for the square lattice is
+$\beta_c = \tfrac{1}{2}\ln(1+\sqrt{2}) \approx 0.4407$, which the simulation
+recovers from the peak of the susceptibility.

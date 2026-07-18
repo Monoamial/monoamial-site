@@ -1,0 +1,29 @@
+---
+title: "Why entropy is secretly geometry"
+description: "An expository note on relative entropy as a squared distance, and what that buys you."
+date: 2026-03-18
+tags: ["entropy", "information-geometry", "exposition"]
+---
+
+Relative entropy looks like an asymmetric, unfamiliar object,
+
+$$
+D(p \,\|\, q) = \sum_x p(x) \log \frac{p(x)}{q(x)},
+$$
+
+but to second order it is just a **squared distance**. Expanding around
+$q = p$ with $p = q + \delta$,
+
+$$
+D(p \,\|\, q) = \tfrac{1}{2} \sum_x \frac{\delta(x)^2}{p(x)} + O(\delta^3)
+            = \tfrac{1}{2}\, \delta^\top G(p)\, \delta + \cdots,
+$$
+
+where $G(p)$ is the **Fisher information metric**. So the space of probability
+distributions is a Riemannian manifold, and entropy measures (infinitesimal)
+geodesic distance on it.
+
+Once you see this, a lot of inequalities stop being magic: Pinsker, the
+data-processing inequality, and the concavity of entropy all become statements
+about a curved space. That reframing is the whole reason information geometry is
+useful to a physicist.

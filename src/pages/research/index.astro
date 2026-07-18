@@ -1,0 +1,37 @@
+---
+import Base from '../../layouts/Base.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('research', (e) => !e.data.draft))
+  .sort((a, b) => +b.data.date - +a.data.date);
+---
+<Base title="Research" description="Research in geometric probability theory, dynamical systems, statistical physics, and quantum information.">
+  <header class="page-head">
+    <h1>Research</h1>
+    <p class="sub">
+      Geometric probability on the path space of dynamical systems &mdash; how
+      invariant measures, large deviations, and entropy organize the long-time
+      behavior of physical systems.
+    </p>
+  </header>
+  <div class="list">
+    {entries.length === 0 && <p class="empty">Notes and preprints will appear here.</p>}
+    {entries.map((e) => (
+      <EntryCard
+        href={`/research/${e.id}/`}
+        title={e.data.title}
+        date={e.data.date}
+        description={e.data.description}
+        tags={e.data.tags}
+        badges={[e.data.status]}
+      />
+    ))}
+  </div>
+</Base>
+<style>
+  .page-head { margin: 1.5rem 0 2rem; }
+  .sub { color: var(--chalk-dim); max-width: 60ch; font-size: 1.1rem; }
+  .list { display: grid; gap: 1.1rem; }
+  .empty { color: var(--chalk-faint); font-style: italic; }
+</style>

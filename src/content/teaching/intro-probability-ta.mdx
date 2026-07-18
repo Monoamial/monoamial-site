@@ -1,0 +1,33 @@
+---
+title: "Introduction to Probability — recitation notes"
+description: "Weekly recitation notes and problem sets for an undergraduate probability course."
+date: 2026-02-01
+role: "Teaching Assistant"
+term: "Spring 2026"
+tags: ["probability", "undergraduate"]
+pdf: "/teaching/intro-probability-notes.pdf"
+---
+
+I ran the weekly recitations for the undergraduate probability course. The
+goal each week was to make one idea *inevitable* rather than memorized.
+
+## A recurring theme: linearity of expectation
+
+The single most useful trick in the course. For **any** random variables,
+independent or not,
+
+$$
+\mathbb{E}\!\left[\sum_{i=1}^n X_i\right] = \sum_{i=1}^n \mathbb{E}[X_i].
+$$
+
+The indicator method turns counting problems into one-line computations. For
+the number of fixed points of a random permutation $\sigma \in S_n$, write
+$X = \sum_i \mathbf{1}[\sigma(i) = i]$, so
+
+$$
+\mathbb{E}[X] = \sum_{i=1}^n \mathbb{P}[\sigma(i)=i] = n \cdot \tfrac{1}{n} = 1,
+$$
+
+independent of $n$ — the punchline students remember all term.
+
+Notes and problem sets are linked above.

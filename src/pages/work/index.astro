@@ -1,0 +1,139 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const [research, code, writing, teaching] = await Promise.all([
+  getCollection('research', (e) => !e.data.draft),
+  getCollection('code', (e) => !e.data.draft),
+  getCollection('writing', (e) => !e.data.draft),
+  getCollection('teaching', (e) => !e.data.draft),
+]);
+
+const all = [
+  ...research.map((e) => ({ section: 'research', href: `/research/${e.id}/`, ...e.data })),
+  ...code.map((e) => ({ section: 'code', href: `/code/${e.id}/`, ...e.data })),
+  ...writing.map((e) => ({ section: 'writing', href: `/writing/${e.id}/`, ...e.data })),
+  ...teaching.map((e) => ({ section: 'teaching', href: `/teaching/${e.id}/`, ...e.data })),
+].sort((a, b) => +b.date - +a.date);
+
+const allTags = [...new Set(all.flatMap((e) => e.tags))].sort();
+const sectionColors = {
+  research: 'var(--accent)',
+  code: 'var(--accent-2)',
+  writing: 'var(--accent-3)',
+  teaching: '#bda7e8',
+};
+---
+<Base title="All work" description="Everything in one place — research, code, writing, and teaching, filterable by tag.">
+  <header class="page-head">
+    <h1>All work</h1>
+    <p class="sub">Every entry on the board, in one place. Filter by tag or type.</p>
+  </header>
+
+  <div class="filters" id="filters">
+    <button class="chip active" data-filter="all" data-kind="section">All</button>
+    <button class="chip" data-filter="research" data-kind="section" style="--c: var(--accent)">Research</button>
+    <button class="chip" data-filter="code" data-kind="section" style="--c: var(--accent-2)">Code</button>
+    <button class="chip" data-filter="writing" data-kind="section" style="--c: var(--accent-3)">Writing</button>
+    <button class="chip" data-filter="teaching" data-kind="section" style="--c: #bda7e8">Teaching</button>
+  </div>
+  <div class="filters tags" id="tag-filters">
+    {allTags.map((t) => (
+      <button class="chip tag-chip" data-filter={t} data-kind="tag">#{t}</button>
+    ))}
+  </div>
+
+  <div class="list" id="entry-list">
+    {all.map((e) => (
+      <a
+        href={e.href}
+        class="note-card entry"
+        data-section={e.section}
+        data-tags={e.tags.join(',')}
+        style={`border-top: 3px solid ${sectionColors[e.section]}`}
+      >
+        <div class="entry-head">
+          <span class="section-label" style={`color:${sectionColors[e.section]}`}>{e.section}</span>
+          <span class="meta">{new Date(e.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}</span>
+        </div>
+        <h3>{e.title}</h3>
+        {e.description && <p>{e.description}</p>}
+        <div class="entry-foot">
+          {e.tags.map((t) => <span class="tag">#{t}</span>)}
+        </div>
+      </a>
+    ))}
+  </div>
+  <p class="empty-msg" id="empty-msg" hidden>Nothing matches that filter yet.</p>
+</Base>
+
+<style>
+  .page-head { margin: 1.5rem 0 1.5rem; }
+  .sub { color: var(--chalk-dim); max-width: 60ch; font-size: 1.1rem; }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.9rem; }
+  .filters.tags { margin-bottom: 1.8rem; }
+  .chip {
+    font-family: var(--font-hand);
+    font-size: 1.05rem;
+    color: var(--chalk-dim);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--board-edge);
+    border-radius: 999px;
+    padding: 0.15em 0.9em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .chip[style] { border-color: var(--c, var(--board-edge)); }
+  .chip:hover { color: var(--chalk); }
+  .chip.active { background: var(--c, var(--accent)); color: var(--board); font-weight: 600; }
+  .tag-chip { font-size: 0.95rem; }
+  .list { display: grid; gap: 1.1rem; }
+  .entry-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .section-label { font-family: var(--font-hand); font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .entry h3 { margin: 0.15em 0 0.3em; }
+  .entry-foot { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.6rem; }
+  .empty-msg { color: var(--chalk-faint); font-style: italic; }
+  .entry[hidden] { display: none; }
+</style>
+
+<script is:inline>
+  (() => {
+    let sectionFilter = 'all';
+    const tagFilters = new Set();
+
+    const sectionBtns = document.querySelectorAll('#filters .chip');
+    const tagBtns = document.querySelectorAll('#tag-filters .chip');
+    const entries = document.querySelectorAll('#entry-list .entry');
+    const emptyMsg = document.getElementById('empty-msg');
+
+    function apply() {
+      let visible = 0;
+      entries.forEach((el) => {
+        const matchesSection = sectionFilter === 'all' || el.dataset.section === sectionFilter;
+        const entryTags = (el.dataset.tags || '').split(',');
+        const matchesTags = tagFilters.size === 0 || [...tagFilters].every((t) => entryTags.includes(t));
+        const show = matchesSection && matchesTags;
+        el.hidden = !show;
+        if (show) visible++;
+      });
+      emptyMsg.hidden = visible !== 0;
+    }
+
+    sectionBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        sectionFilter = btn.dataset.filter;
+        sectionBtns.forEach((b) => b.classList.toggle('active', b === btn));
+        apply();
+      });
+    });
+
+    tagBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const t = btn.dataset.filter;
+        if (tagFilters.has(t)) { tagFilters.delete(t); btn.classList.remove('active'); }
+        else { tagFilters.add(t); btn.classList.add('active'); }
+        apply();
+      });
+    });
+  })();
+</script>

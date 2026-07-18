@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('code', (e) => !e.data.draft))
+  .sort((a, b) => +b.data.date - +a.data.date);
+---
+<Base title="Code & Simulation" description="Numerical experiments, Monte Carlo simulations, and scientific visualization.">
+  <header class="page-head">
+    <h1>Code &amp; Simulation</h1>
+    <p class="sub">
+      The lab notebook: Monte Carlo experiments, integrators, and visualizations
+      that turn a conjecture into a picture you can argue with.
+    </p>
+  </header>
+  <div class="list">
+    {entries.length === 0 && <p class="empty">Projects and demos will appear here.</p>}
+    {entries.map((e) => (
+      <EntryCard
+        href={`/code/${e.id}/`}
+        title={e.data.title}
+        date={e.data.date}
+        description={e.data.description}
+        tags={e.data.tags}
+        badges={e.data.stack}
+      />
+    ))}
+  </div>
+</Base>
+<style>
+  .page-head { margin: 1.5rem 0 2rem; }
+  .sub { color: var(--chalk-dim); max-width: 60ch; font-size: 1.1rem; }
+  .list { display: grid; gap: 1.1rem; }
+  .empty { color: var(--chalk-faint); font-style: italic; }
+</style>
