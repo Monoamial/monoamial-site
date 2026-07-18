@@ -1,4 +1,4 @@
-# noamborgnia.com
+# monoamial.com
 
 Personal site for Noam Borgnia — Master's student in mathematical physics.
 Chalkboard/notebook aesthetic, built with [Astro](https://astro.build) +
