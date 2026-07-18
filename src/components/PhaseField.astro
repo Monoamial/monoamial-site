@@ -4,9 +4,9 @@
   and advects them along a vector field (a nod to dynamical systems on the
   chalkboard). Drawn in chalk strokes. Respects reduced-motion.
 
-  Easter egg: the cursor perturbs the field like a small vortex, and
-  left/right click drop a source/sink (a point of positive/negative
-  divergence) that the flow responds to for a little while.
+  Easter egg (desktop only): the cursor perturbs the field like a small
+  vortex, and a right-click drops a random singularity — a source, a sink,
+  or a vortex — that the flow responds to for a little while.
 */
 ---
 <canvas id="phasefield" aria-hidden="true"></canvas>
@@ -22,8 +22,9 @@
 
     // cursor-driven local vortex
     const cursor = { x: 0, y: 0, active: false };
-    // click-planted sources (sign +1) / sinks (sign -1)
+    // right-click-planted singularities: source | sink | vortex
     const wells = [];
+    const WELL_KINDS = ['source', 'sink', 'vortex'];
     const WELL_LIFESPAN = 16000; // ms
     const WELL_FADE = 2000; // ms tail at the end of life
     const MAX_WELLS = 8;
@@ -53,8 +54,14 @@
       return fadeIn * fadeOut;
     }
 
-    function addWell(x, y, sign) {
-      wells.push({ x, y, sign, born: performance.now(), lifespan: WELL_LIFESPAN });
+    function addRandomWell(x, y) {
+      const kind = WELL_KINDS[(Math.random() * WELL_KINDS.length) | 0];
+      wells.push({
+        x, y, kind,
+        chir: Math.random() < 0.5 ? 1 : -1, // vortex spin direction
+        born: performance.now(),
+        lifespan: WELL_LIFESPAN,
+      });
       if (wells.length > MAX_WELLS) wells.shift();
       requestRender();
     }
@@ -86,9 +93,16 @@
         const dx = x - w.x, dy = y - w.y;
         const d2 = dx * dx + dy * dy;
         const d = Math.sqrt(d2) + 6;
-        const inv = (w.sign * 7.5 * env * 4200) / (d2 + 4200);
-        ax += (dx / d) * inv;
-        ay += (dy / d) * inv;
+        const inv = (7.5 * env * 4200) / (d2 + 4200);
+        if (w.kind === 'vortex') {
+          // pure circulation, chirality chosen at spawn
+          ax += (-dy / d) * inv * w.chir;
+          ay += (dx / d) * inv * w.chir;
+        } else {
+          const sign = w.kind === 'source' ? 1 : -1;
+          ax += (dx / d) * inv * sign;
+          ay += (dy / d) * inv * sign;
+        }
       }
 
       return [ax, ay];
@@ -98,18 +112,31 @@
       const env = wellEnvelope(w, now);
       if (env <= 0) return;
       const r = 9 + Math.sin((now - w.born) * 0.005) * 2;
+      const colors = { source: 'hsl(45, 70%, 72%)', sink: 'hsl(190, 55%, 72%)', vortex: 'hsl(265, 45%, 78%)' };
       ctx.save();
       ctx.globalAlpha = 0.55 * env;
-      ctx.strokeStyle = w.sign > 0 ? 'hsl(45, 70%, 72%)' : 'hsl(190, 55%, 72%)';
+      ctx.strokeStyle = colors[w.kind];
       ctx.lineWidth = 1.4;
-      ctx.beginPath();
-      ctx.arc(w.x, w.y, r, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(w.x - 4, w.y);
-      ctx.lineTo(w.x + 4, w.y);
-      if (w.sign > 0) { ctx.moveTo(w.x, w.y - 4); ctx.lineTo(w.x, w.y + 4); }
-      ctx.stroke();
+      if (w.kind === 'vortex') {
+        // small spiral, wound in the direction of circulation
+        ctx.beginPath();
+        for (let a = 0; a <= Math.PI * 2.5; a += 0.25) {
+          const rr = 2 + (a / (Math.PI * 2.5)) * r;
+          const px = w.x + Math.cos(a * w.chir) * rr;
+          const py = w.y + Math.sin(a * w.chir) * rr;
+          if (a === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.arc(w.x, w.y, r, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(w.x - 4, w.y);
+        ctx.lineTo(w.x + 4, w.y);
+        if (w.kind === 'source') { ctx.moveTo(w.x, w.y - 4); ctx.lineTo(w.x, w.y + 4); }
+        ctx.stroke();
+      }
       ctx.restore();
     }
 
@@ -138,7 +165,7 @@
         // swallowed by a nearby sink, or wandered off / expired -> respawn
         let swallowed = false;
         for (const w of wells) {
-          if (w.sign < 0 && wellEnvelope(w, now) > 0) {
+          if (w.kind === 'sink' && wellEnvelope(w, now) > 0) {
             const dx = p.x - w.x, dy = p.y - w.y;
             if (dx * dx + dy * dy < 130) { swallowed = true; break; }
           }
@@ -191,42 +218,12 @@
       requestRender();
     });
     canvas.addEventListener('mouseleave', () => { cursor.active = false; requestRender(); });
-    canvas.addEventListener('click', (e) => {
-      const p = pointerPos(e);
-      addWell(p.x, p.y, +1);
-    });
+    // desktop-only easter egg: right-click plants a random singularity
     canvas.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       const p = pointerPos(e);
-      addWell(p.x, p.y, -1);
+      addRandomWell(p.x, p.y);
     });
-
-    // basic touch parity: tap plants a source, long-press plants a sink
-    let touchStart = null;
-    canvas.addEventListener('touchstart', (e) => {
-      const touch = e.touches[0];
-      if (!touch) return;
-      const r = canvas.getBoundingClientRect();
-      const x = touch.clientX - r.left, y = touch.clientY - r.top;
-      cursor.x = x; cursor.y = y; cursor.active = true;
-      touchStart = { x, y, time: performance.now() };
-      requestRender();
-    }, { passive: true });
-    canvas.addEventListener('touchmove', (e) => {
-      const touch = e.touches[0];
-      if (!touch) return;
-      const r = canvas.getBoundingClientRect();
-      cursor.x = touch.clientX - r.left; cursor.y = touch.clientY - r.top;
-      requestRender();
-    }, { passive: true });
-    canvas.addEventListener('touchend', () => {
-      if (touchStart) {
-        const held = performance.now() - touchStart.time;
-        addWell(touchStart.x, touchStart.y, held > 450 ? -1 : +1);
-      }
-      touchStart = null;
-      cursor.active = false;
-    }, { passive: true });
 
     start();
   })();
