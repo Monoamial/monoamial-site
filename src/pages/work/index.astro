@@ -21,7 +21,7 @@ const sectionColors = {
   research: 'var(--accent)',
   code: 'var(--accent-2)',
   writing: 'var(--accent-3)',
-  teaching: '#bda7e8',
+  teaching: 'var(--accent-4)',
 };
 ---
 <Base title="All work" description="Everything in one place — research, code, writing, and teaching, filterable by tag.">
@@ -35,7 +35,7 @@ const sectionColors = {
     <button class="chip" data-filter="research" data-kind="section" style="--c: var(--accent)">Research</button>
     <button class="chip" data-filter="code" data-kind="section" style="--c: var(--accent-2)">Code</button>
     <button class="chip" data-filter="writing" data-kind="section" style="--c: var(--accent-3)">Writing</button>
-    <button class="chip" data-filter="teaching" data-kind="section" style="--c: #bda7e8">Teaching</button>
+    <button class="chip" data-filter="teaching" data-kind="section" style="--c: var(--accent-4)">Teaching</button>
   </div>
   <div class="filters tags" id="tag-filters">
     {allTags.map((t) => (

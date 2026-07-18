@@ -30,6 +30,7 @@ const entries = (await getCollection('teaching', (e) => !e.data.draft))
 </Base>
 <style>
   .page-head { margin: 1.5rem 0 2rem; }
+  .page-head h1 { color: var(--accent-4); }
   .sub { color: var(--chalk-dim); max-width: 60ch; font-size: 1.1rem; }
   .list { display: grid; gap: 1.1rem; }
   .empty { color: var(--chalk-faint); font-style: italic; }

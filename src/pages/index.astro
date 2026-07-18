@@ -30,7 +30,7 @@ const pillars = [
     kicker: '04',
     title: 'Teaching',
     blurb: 'Courses, problem sets, and materials built to make hard things feel inevitable.',
-    accent: '#bda7e8',
+    accent: 'var(--accent-4)',
   },
 ];
 ---
@@ -118,9 +118,12 @@ const pillars = [
 
   .pillars {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* symmetric 2x2 */
     gap: 1.2rem;
     margin: 2rem 0;
+  }
+  @media (max-width: 620px) {
+    .pillars { grid-template-columns: 1fr; }
   }
   .pillar { position: relative; border-top: 3px solid var(--c); }
   .pillar .kicker {

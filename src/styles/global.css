@@ -13,9 +13,10 @@
   --chalk: #f2efe6;            /* warm chalk white */
   --chalk-dim: #c9c8bd;
   --chalk-faint: #8c9690;
-  --accent: #f4c95d;          /* yellow chalk */
-  --accent-2: #8fd3c4;        /* mint chalk */
-  --accent-3: #e88c8c;        /* coral chalk */
+  --accent: #f4c95d;          /* yellow chalk — research */
+  --accent-2: #8fd3c4;        /* mint chalk — code & simulation */
+  --accent-3: #e88c8c;        /* coral chalk — writing */
+  --accent-4: #bda7e8;        /* lavender chalk — teaching */
   --wood: #6b4a2b;            /* tray / frame wood */
   --wood-2: #57391f;
 
