@@ -50,16 +50,20 @@ const isActive = (href) =>
     flex-wrap: wrap;
   }
   .brand {
-    font-family: var(--font-hand);
-    font-size: 1.7rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.45rem;
+    letter-spacing: 0.02em;
     color: var(--chalk);
     background: none;
     white-space: nowrap;
   }
-  nav { display: flex; gap: 0.4rem 1.1rem; flex-wrap: wrap; }
+  nav { display: flex; gap: 0.4rem 1.15rem; flex-wrap: wrap; align-items: baseline; }
   .navlink {
-    font-family: var(--font-hand);
-    font-size: 1.25rem;
+    font-family: var(--font-label);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
     color: var(--chalk-dim);
     background: none;
     padding: 0 2px;

@@ -19,8 +19,11 @@
   --wood: #6b4a2b;            /* tray / frame wood */
   --wood-2: #57391f;
 
-  /* Typography */
-  --font-hand: 'Caveat', 'Bradley Hand', 'Comic Sans MS', cursive;
+  /* Typography — academic chalkboard: elegant serif display for headings
+     (careful chalk lettering), letterspaced mono for labels (lab-notebook
+     precision), readable serif for body text. */
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-label: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --font-serif: 'Spectral', Georgia, 'Times New Roman', serif;
   --font-body: 'Spectral', Georgia, serif;
 
@@ -80,25 +83,34 @@ body::before {
   z-index: 100;
   background: var(--accent);
   color: var(--board);
-  font-family: var(--font-hand);
-  font-size: 1.1rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
   padding: 0.4em 1em;
   border-radius: 0 0 6px 0;
 }
 .skip-link:focus { left: 0; }
 
-/* ---------- Headings: chalk lettering ---------- */
+/* ---------- Headings: careful chalk serif ---------- */
 h1, h2, h3 {
-  font-family: var(--font-hand);
-  font-weight: 700;
-  line-height: 1.1;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.08;
   color: var(--chalk);
   text-shadow: 0 1px 0 rgba(0,0,0,0.25);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.01em;
 }
-h1 { font-size: clamp(2.6rem, 6vw, 4.2rem); margin: 0.2em 0; }
-h2 { font-size: clamp(1.9rem, 4vw, 2.6rem); margin: 1.4em 0 0.4em; color: var(--accent); }
-h3 { font-size: 1.5rem; margin: 1.2em 0 0.3em; color: var(--accent-2); }
+h1 { font-size: clamp(2.7rem, 6vw, 4.3rem); margin: 0.2em 0; }
+h2 { font-size: clamp(1.9rem, 4vw, 2.7rem); margin: 1.4em 0 0.4em; color: var(--accent); }
+h3 { font-size: 1.55rem; margin: 1.2em 0 0.3em; color: var(--accent-2); }
+
+/* small uppercase labels — nav, kickers, tags, metadata */
+.label {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
 
 p { margin: 0.8em 0; color: var(--chalk-dim); }
 
@@ -193,23 +205,30 @@ hr {
   box-shadow: 0 8px 24px rgba(0,0,0,0.25);
 }
 .note-card:hover {
-  transform: translateY(-3px) rotate(-0.4deg);
+  transform: translateY(-3px);
   border-color: var(--accent);
   box-shadow: 0 14px 32px rgba(0,0,0,0.35);
 }
 .note-card h3 { margin-top: 0; }
-.note-card .meta { font-size: 0.85rem; color: var(--chalk-faint); }
+.note-card .meta {
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--chalk-faint);
+}
 
 .tag {
   display: inline-block;
-  font-family: var(--font-hand);
-  font-size: 1rem;
-  color: var(--board);
-  background: var(--accent-2);
+  font-family: var(--font-label);
+  font-size: 0.68rem;
+  text-transform: lowercase;
+  letter-spacing: 0.04em;
+  color: var(--accent-2);
+  border: 1px solid color-mix(in srgb, var(--accent-2) 45%, transparent);
   border-radius: 4px;
-  padding: 0 0.5em;
+  padding: 0.1em 0.55em;
   margin-right: 0.3em;
-  transform: rotate(-1.5deg);
 }
 
 /* ---------- simulation controls (shared across src/components/sims/*) ---------- */
@@ -229,8 +248,8 @@ hr {
   flex-wrap: wrap;
   gap: 1rem 1.6rem;
   align-items: center;
-  font-family: var(--font-hand);
-  font-size: 1.1rem;
+  font-family: var(--font-label);
+  font-size: 0.8rem;
   color: var(--chalk-dim);
 }
 .sim-controls label {
@@ -269,8 +288,10 @@ hr {
   display: inline-block;
 }
 .sim-btn {
-  font-family: var(--font-hand);
-  font-size: 1.1rem;
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   color: var(--chalk);
   background: rgba(255,255,255,0.06);
   border: 1px solid var(--board-edge);

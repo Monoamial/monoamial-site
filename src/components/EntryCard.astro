@@ -20,11 +20,13 @@ const d = date
   .entry-head h3 { margin: 0; }
   .entry-foot { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; margin-top: 0.7rem; }
   .badge {
-    font-family: var(--font-hand);
-    font-size: 0.95rem;
+    font-family: var(--font-label);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: var(--accent);
-    border: 1px solid var(--board-edge);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
     border-radius: 4px;
-    padding: 0 0.5em;
+    padding: 0.1em 0.55em;
   }
 </style>

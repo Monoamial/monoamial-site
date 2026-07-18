@@ -73,8 +73,10 @@ const sectionColors = {
   .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.9rem; }
   .filters.tags { margin-bottom: 1.8rem; }
   .chip {
-    font-family: var(--font-hand);
-    font-size: 1.05rem;
+    font-family: var(--font-label);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     color: var(--chalk-dim);
     background: rgba(255,255,255,0.05);
     border: 1px solid var(--board-edge);
@@ -86,10 +88,10 @@ const sectionColors = {
   .chip[style] { border-color: var(--c, var(--board-edge)); }
   .chip:hover { color: var(--chalk); }
   .chip.active { background: var(--c, var(--accent)); color: var(--board); font-weight: 600; }
-  .tag-chip { font-size: 0.95rem; }
+  .tag-chip { font-size: 0.66rem; text-transform: lowercase; letter-spacing: 0.04em; }
   .list { display: grid; gap: 1.1rem; }
   .entry-head { display: flex; justify-content: space-between; align-items: baseline; }
-  .section-label { font-family: var(--font-hand); font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .section-label { font-family: var(--font-label); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.14em; }
   .entry h3 { margin: 0.15em 0 0.3em; }
   .entry-foot { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.6rem; }
   .empty-msg { color: var(--chalk-faint); font-style: italic; }

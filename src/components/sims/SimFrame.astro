@@ -46,31 +46,34 @@ const { title, kind = 'live' } = Astro.props as Props;
     position: absolute;
     top: 0.8rem;
     right: 1rem;
-    font-family: var(--font-hand);
-    font-size: 0.95rem;
-    padding: 0.05em 0.6em;
+    font-family: var(--font-label);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.25em 0.7em;
     border-radius: 4px;
-    color: var(--board);
   }
   .kind-tag[data-kind='live'] {
-    background: var(--accent-2);
+    color: var(--accent-2);
+    border: 1px solid color-mix(in srgb, var(--accent-2) 45%, transparent);
   }
   .kind-tag[data-kind='live']::before {
     content: '';
     display: inline-block;
     width: 6px; height: 6px;
-    margin-right: 0.4em;
+    margin-right: 0.5em;
     border-radius: 50%;
-    background: #1e5c46;
+    background: var(--accent-2);
     animation: pulse 1.6s ease-in-out infinite;
   }
-  .kind-tag[data-kind='recorded'] { background: var(--chalk-faint); }
+  .kind-tag[data-kind='recorded'] { color: var(--chalk-faint); border: 1px solid color-mix(in srgb, var(--chalk-faint) 45%, transparent); }
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.25; }
   }
   .sim-title {
-    font-family: var(--font-hand);
+    font-family: var(--font-display);
+    font-weight: 600;
     font-size: 1.35rem;
     color: var(--accent);
     margin: 0 0 0.6rem;
