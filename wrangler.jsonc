@@ -2,7 +2,7 @@
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"compatibility_date": "2026-07-18",
 	"compatibility_flags": ["global_fetch_strictly_public"],
-	"name": "borgnia-site",
+	"name": "monoamial-site",
 	"main": "@astrojs/cloudflare/entrypoints/server",
 	"assets": {
 		"directory": "./dist",
