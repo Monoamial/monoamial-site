@@ -16,15 +16,17 @@ canvas { display: block; width: 100%; height: clamp(330px, 58vw, 480px); }
 .legend .center { background: #f4c95d; border-radius: 50%; }
 .controls { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .buttons { display: flex; gap: 7px; }
-button, select { min-height: 40px; border: 1px solid #647a70; border-radius: 3px; background: #25322f; color: #f2efe6; font: 12px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; }
+button { min-height: 40px; border: 1px solid #647a70; border-radius: 3px; background: #25322f; color: #f2efe6; font: 12px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; }
 button { cursor: pointer; padding: 8px 15px; }
 button.primary { color: #172923; background: #8fd3c4; border-color: #8fd3c4; min-width: 70px; font-weight: 600; }
-button:hover, select:hover { border-color: #cee0cd; }
+button:hover { border-color: #cee0cd; }
 button.primary:hover { background: #c4d7c0; }
 button:disabled { opacity: .45; cursor: default; }
-button:focus-visible, select:focus-visible { outline: 2px solid #f4c95d; outline-offset: 3px; }
-.alpha-label { display: flex; gap: 8px; align-items: center; font: 14px/1.4 Georgia, serif; }
-select { padding: 8px; min-width: 52px; }
+button:focus-visible, input:focus-visible { outline: 2px solid #f4c95d; outline-offset: 3px; }
+.alpha-control { width: min(190px, 38%); }
+.alpha-control label { display: flex; justify-content: space-between; color: #c9c8bd; font: 12px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.alpha-control output { color: #f4c95d; font-variant-numeric: tabular-nums; }
+.alpha-control input { display: block; width: 100%; margin: 5px 0 0; min-height: 24px; accent-color: #f4c95d; cursor: pointer; }
 .caption { margin: 12px 0 0; color: #a8b8b1; font-size: 11px; line-height: 1.5; }
 .limit-status { color: #f4c95d; margin: 12px 0 0; font-size: 13px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
@@ -33,6 +35,6 @@ select { padding: 8px; min-width: 52px; }
   button { padding: 8px 10px; }
   button.primary { min-width: 60px; }
   .buttons { gap: 5px; }
-  .alpha-label { gap: 5px; }
+  .alpha-control { width: min(130px, 37%); }
   .readouts { top: 8px; right: 8px; gap: 12px; font-size: 10px; }
 }

@@ -2,7 +2,7 @@
 title: "From Quantum Theory to a Real Quantum Computer"
 description: "Working with my high school student to simulate a quantum spin chain on quantum hardware and investigate the effects of noise."
 date: 2026-09-23
-tags: ["quantum-computing", "spin-chains", "mentorship"]
+tags: ["quantum-computing", "mentorship"]
 ---
 
 I’ve been working with my high school student on quantum computing, beginning with a guided journey through Scott Aaronson’s *Quantum Computing Since Democritus*. We’re now turning that reading into a research project: simulating a quantum spin chain on a real quantum computer and investigating how accurately we can recover its behaviour despite hardware noise.

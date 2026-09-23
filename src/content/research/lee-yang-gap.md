@@ -6,8 +6,7 @@ status: "preprint"
 coauthors: ["Jui-Hui Chung", "Jacob Shapiro"]
 tags:
   - mathematical-physics
-  - Ising-model
-  - Lee-Yang-zeros
+  - statistical-mechanics
 ---
 
 Imagine a small magnet at every point of a square lattice, each pointing up or down. Neighbouring magnets prefer to agree, while temperature introduces disorder. This is the **Ising model**: a simple system in which local interactions produce a collective phase transition.

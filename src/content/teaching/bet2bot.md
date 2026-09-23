@@ -2,7 +2,7 @@
 title: "Bet2Bot: Learning by Building Poker Bots"
 description: "Building a poker-bot game with my student, using simulation to explore strategy, Bayesian statistics, and game theory."
 date: 2026-09-23
-tags: ["poker", "game-development", "mentorship"]
+tags: ["mentorship"]
 ---
 
 I’ve been working with my student on Bet2Bot, a game where you build a bot to play poker for you. You then test it in large simulations against increasingly tricky opponents, refining your strategy as you go.

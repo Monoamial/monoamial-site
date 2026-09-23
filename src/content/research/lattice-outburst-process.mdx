@@ -1,9 +1,9 @@
 ---
 title: "The lattice outburst process"
-description: "How a model of infection helps us bound cluster growth, using estimates for greedy lattice animals."
+description: "How a lattice infection model helps bound cluster growth and its moments."
 date: 2026-09-23
 status: "in progress"
-tags: ["probability", "random-growth", "lattice-animals"]
+tags: ["probability"]
 ---
 
 import OutburstDemo from '../../components/OutburstDemo.astro';
@@ -66,48 +66,7 @@ Nonexplosion means that infinitely many outbursts cannot occur in a finite time 
 
 For example, in two dimensions we obtain $\mathbb E[|G_t|]\leq C(1+t)^2$ when $\alpha>6$, and a second-moment bound of $C(1+t)^4$ when $\alpha>8$. These are sufficient conditions from the proof.
 
-**A formal writeup is coming soon.** Here is the main argument.
-
-## Separating fast and slow outbursts
-
-Take a site infected by time $t$ and trace its infection backwards: first to the centre that infected it, then to the centre that infected that centre, and so on until we reach the origin. The waiting times along this history sum to at most $t$.
-
-Following Gouéré and Marchand, call a radius-$R$ outburst **fast** if its first clock rings within $\varepsilon R$ of its centre becoming infected. For a non-fast outburst, the radius is at most its waiting time divided by $\varepsilon$. Together, the non-fast outbursts can therefore account for at most $t/\varepsilon$ of the distance travelled.
-
-At each site, collect the radii of the fast outbursts into a weight:
-
-$$
-W_x=\sum_{R\geq1}R\,\mathbf 1_{\{\tau_{x,R}\leq\varepsilon R\}},
-\qquad \tau_{x,R}\sim\operatorname{Exp}(R^{-\alpha}).
-$$
-
-These weights are independent across sites, and making $\varepsilon$ small makes fast outbursts rare. However, an infection history is not a fixed path: it can pass through sites with unusually large weights. We need a bound that holds for all possible histories at once.
-
-## The lattice animal estimate
-
-A **lattice animal** is a finite connected set of lattice sites. Let $\mathcal A_n$ be the largest total weight of an $n$-site animal containing the origin. This is the greedy lattice animal problem studied by [Cox, Gandolfi, Griffin and Kesten](https://doi.org/10.1214/aoap/1177005277) in 1993, with further convergence results obtained by [Gandolfi and Kesten](https://doi.org/10.1214/aoap/1177005201) in 1994.
-
-Join successive infection centres by shortest nearest-neighbour paths. The resulting walk has some length $L$ and visits at most $L+1$ sites. Its vertex set is an animal, so the bound on the infection history gives
-
-$$
-L\leq \frac{t}{\varepsilon}+\mathcal A_{L+1}.
-$$
-
-Under our assumption on $\alpha$, we show that for sufficiently small $\varepsilon$, there is a random size $N$ beyond which every animal containing the origin has average weight at most $1/2$. Moreover, $\mathbb E[N^{dk}]<\infty$. Controlling this random threshold is the step that lets us bound moments, rather than only eventual growth.
-
-We adapt the upper-bound argument of Cox and coauthors. Group the weights by size, using levels $1,2,4,8,\ldots$. An $n$-site animal containing the origin stays within a box of $O(n^d)$ sites. A union bound controls the chance of finding a very large weight anywhere in that box. For smaller weights, we set a budget at each level for how many such sites an animal can contain. The budgets are chosen so that their combined weight is at most a small multiple of $n$.
-
-To bound the chance of exceeding a budget, traverse a spanning tree of the animal. This takes at most $2(n-1)$ steps, which limits the possible lists of large-weight sites encountered along the way. Counting these lists and using independence gives an exponential bound on collecting too many sites from any one level. Combining the estimates gives a polynomial tail for $N$ with exponent greater than $dk$, and hence the required finite moment.
-
-If $L+1\geq N$, we now have
-
-$$
-L\leq\frac{t}{\varepsilon}+\frac{L+1}{2}
-\quad\Longrightarrow\quad
-L\leq\frac{2t}{\varepsilon}+1.
-$$
-
-Otherwise the history has length less than $N$. Every infected site therefore lies within distance $C(t+N+1)$ of the origin. Bounding the number of sites in that ball and taking expectations proves the moment bound. This confinement to a finite ball over each finite time interval also rules out explosion.
+The proof separates slow outbursts, which cannot travel far in limited time, from rare fast ones. Greedy lattice-animal estimates control how much a possible infection path can gain from the fast outbursts, including the rare paths needed for the moment bounds. **A formal writeup is coming soon.**
 
 ## References
 

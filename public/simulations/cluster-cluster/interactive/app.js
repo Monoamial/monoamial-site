@@ -35,6 +35,7 @@ class SimulationView {
     this.touchParticle = null;
     this.xrayAll = false;
     this.preparing = false;
+    this.preparationId = 0;
     this.showingComplete = false;
     this.bind();
     this.reset();
@@ -45,7 +46,7 @@ class SimulationView {
 
   configuration() {
     return this.geometry
-      ? { side: 48, occupancy: 1, alpha: 1, seed: 1837 }
+      ? { side: Number(this.element('side').value), occupancy: 1, alpha: 1, seed: 1837 }
       : {
           side: Number(this.element('side').value),
           occupancy: Number(this.element('occupancy').value),
@@ -68,6 +69,10 @@ class SimulationView {
       });
       return;
     }
+    this.element('side').addEventListener('input', () => this.reset());
+    this.element('speed').addEventListener('input', () => {
+      this.element('speed-value').value = `${Number(this.element('speed').value).toFixed(2)}×`;
+    });
     this.element('finish').addEventListener('click', () => this.showComplete());
     this.element('xray').addEventListener('click', () => this.toggleXray());
     this.canvas.addEventListener('keydown', event => {
@@ -103,12 +108,18 @@ class SimulationView {
 
   reset() {
     this.pause();
+    this.preparationId++;
     this.engine = new CCAEngine(this.configuration());
     this.targetTime = 0;
     this.pointer = null;
     this.touchParticle = null;
     this.showingComplete = false;
     if (this.geometry) {
+      const side = this.engine.config.side;
+      this.element('side-value').value = `${side} × ${side}`;
+      this.element('speed-value').value = `${Number(this.element('speed').value).toFixed(2)}×`;
+      setText(this.element('hint'), `Hover or tap a cluster to see through it. Full occupancy · ${side} × ${side} · α = 1.`);
+      this.completeSnapshot = null;
       this.preparing = true;
       this.snapshot = null;
       this.updateControls();
@@ -125,14 +136,17 @@ class SimulationView {
 
   prepareComplete() {
     // Bound each preparation batch so inputs and scrolling remain responsive.
-    // No animation autoplays: the first geometry view is the finished tree.
+    // Ignore obsolete batches if the lattice size changes before completion.
+    const preparationId = this.preparationId;
+    const engine = this.engine;
     const work = () => {
+      if (preparationId !== this.preparationId) return;
       const deadline = performance.now() + 7;
       let budget = 256;
-      while (this.engine.clusterCount > 1 && budget-- > 0 && performance.now() < deadline) this.engine.step();
-      if (this.engine.clusterCount > 1) queue(work);
+      while (engine.clusterCount > 1 && budget-- > 0 && performance.now() < deadline) engine.step();
+      if (engine.clusterCount > 1) queue(work);
       else {
-        this.completeSnapshot = this.engine.snapshot();
+        this.completeSnapshot = engine.snapshot();
         this.preparing = false;
         this.showComplete();
       }
@@ -185,9 +199,11 @@ class SimulationView {
       this.element('play').disabled = this.preparing;
       this.element('finish').disabled = this.preparing || this.showingComplete;
       this.element('xray').setAttribute('aria-pressed', String(this.xrayAll));
-      const state = this.preparing ? 'Preparing the complete tree.' : this.showingComplete ? 'Complete tree: 2,304 particles joined by 2,303 bonds.' : this.running ? 'Replaying aggregation. Hover a cluster to reveal its bonds.' : 'Replay paused.';
+      const side = this.engine.config.side;
+      const particles = this.engine.particleCount;
+      const state = this.preparing ? 'Preparing the complete tree.' : this.showingComplete ? `Complete tree: ${particles.toLocaleString()} particles joined by ${(particles - 1).toLocaleString()} bonds.` : this.running ? 'Replaying aggregation. Hover a cluster to reveal its bonds.' : 'Replay paused.';
       setText(this.element('status'), state);
-      this.canvas.setAttribute('aria-label', `${this.showingComplete ? 'Completed merger tree' : 'Merger forest'} on a fully occupied 48 by 48 periodic lattice. Hover or tap a cluster to reveal its bonds. Press X or use X-ray all to reveal every tree.`);
+      this.canvas.setAttribute('aria-label', `${this.showingComplete ? 'Completed merger tree' : 'Merger forest'} on a fully occupied ${side} by ${side} periodic lattice. Hover or tap a cluster to reveal its bonds. Press X or use X-ray all to reveal every tree.`);
     } else {
       setText(this.element('play'), this.running ? 'Pause' : this.engine.attempts ? 'Play' : 'Start');
       this.element('play').disabled = ended;
@@ -211,8 +227,8 @@ class SimulationView {
     const previousAttempts = this.engine.attempts;
     const deadline = performance.now() + 8;
     if (this.geometry) {
-      // Compress waiting times for an approximately 13-second forest replay.
-      this.accumulator = Math.min(300, this.accumulator + elapsed * 180 / 1000);
+      // Replay events at an adjustable rate; the model's event history is unchanged.
+      this.accumulator = Math.min(300, this.accumulator + elapsed * 180 * Number(this.element('speed').value) / 1000);
       while (this.accumulator >= 1 && this.engine.clusterCount > 1 && performance.now() < deadline) {
         this.engine.step(); this.accumulator--;
       }

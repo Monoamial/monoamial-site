@@ -128,7 +128,9 @@ function advance(announce = false) {
 }
 
 function reset() {
-  model = new OutburstModel({ alpha: Number($('#alpha').value) });
+  const alpha = Number($('#alpha').value);
+  $('#alpha-value').value = alpha.toFixed(1);
+  model = new OutburstModel({ alpha });
   setRunning(false);
   update({ announce: true });
 }
@@ -139,7 +141,7 @@ runButton.addEventListener('click', () => {
 });
 stepButton.addEventListener('click', () => advance(true));
 $('#reset').addEventListener('click', reset);
-$('#alpha').addEventListener('change', reset);
+$('#alpha').addEventListener('input', reset);
 document.addEventListener('visibilitychange', () => {
   if (document.hidden && running) setRunning(false);
 });
@@ -160,5 +162,5 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
-update();
+reset();
 requestAnimationFrame(frame);
