@@ -3,8 +3,11 @@ title: "Cluster–cluster aggregation: growth without explosion"
 description: "My Master's thesis under Noam Berger: how slowly moving clusters grow, what geometry they leave behind, and how momentum changes the dynamics."
 date: 2026-09-23
 status: "in progress"
-tags: ["probability", "aggregation", "statistical-physics"]
+tags: [probability, aggregation, statistical-physics]
 ---
+
+import ClusterClusterSim from "../../components/sims/ClusterClusterSim.astro";
+
 
 What happens when particles wander, stick together, and slow down as they grow? A simple local rule produces a system whose long-time behaviour is surprisingly hard to understand.
 
@@ -18,9 +21,13 @@ If the translated cluster would overlap another cluster, the move is cancelled. 
 
 The fully occupied case, $p=1$, is especially useful: every attempt is blocked, so particles stay at their original sites while their clusters merge.
 
-<figure className="research-figure-placeholder" id="figure-dynamics" aria-labelledby="caption-dynamics">
-  <div className="research-figure-placeholder__panel">Interactive simulation planned · Watch clusters move and merge</div>
-  <figcaption id="caption-dynamics">Vary the initial density and slowdown parameter. At full occupancy, watch bonds appear while the particles remain fixed.</figcaption>
+<ClusterClusterSim view="dynamics" title="Move together. Merge on contact.">
+  Set the lattice size, occupancy, and slowdown, then press Start.
+</ClusterClusterSim>
+
+<figure className="research-static-figure" id="figure-low-density">
+  <a href="/simulations/cluster-cluster/figures/low-density-overview.png"><img src="/simulations/cluster-cluster/figures/low-density-overview.png" width="4224" height="2288" loading="lazy" alt="A 768 by 768 lattice of branched aggregates at 10% initial occupancy, beside an enlarged central window." /></a>
+  <figcaption>A 768 × 768 periodic lattice and its central detail; p = 0.10, α = 1, t = 25,000. <a href="/simulations/cluster-cluster/figures/low-density-overview.png">Enlarge.</a></figcaption>
 </figure>
 
 **Can an infinite cluster form in finite time?** Berger, Procaccia, Schmid and Sharon proved that it cannot when $\alpha\ge0$, starting from a stationary, ergodic configuration of finite clusters. This includes the entire $\alpha>0$ regime studied here. Their [nonexplosion theorem](https://arxiv.org/abs/2608.05105) makes it possible to ask the next question: how large are the finite clusters? Finiteness alone does not control their expected size.
@@ -73,24 +80,28 @@ The upper argument controls how far an aggregate can spread by tracing its merge
 
 In dimensions $d\ge2$, with vacancies, we also obtain polynomial bounds for all positive moments in a substantial range of $\alpha$. Extending these to every $\alpha>0$, and finding sharp powers, remain open.
 
-<details>
-<summary>The current range with vacancies</summary>
+The table collects our current bounds for $k\ge1$ and $\alpha>0$. Set $T=1+t$; constants multiplying the bounds are suppressed. With vacancies, $M_k$ is conditioned on the origin being occupied at time $t$.
 
-For every fixed density $p\in(0,1]$, all positive occupied-site moments grow at most polynomially when
+<div className="research-results-scroll" role="region" aria-label="Current moment bounds by regime" tabIndex={0}>
+
+| Initial occupancy | Dimension | Slowdown range | Lower bound for $M_k(t)$ | Upper bound for $M_k(t)$ |
+| --- | --- | --- | --- | --- |
+| Full ($p=1$) | $d\ge2$ | All $\alpha>0$ | $T^{k/\alpha}$ | $T^{dk/\alpha+\varepsilon}$, every $\varepsilon>0$ |
+| Vacancies ($0<p<1$) | $d\ge2$ | $\alpha>\beta_d$ | $T^{k/(\alpha+2/d)}$ | $T^{\Gamma(d,\alpha)dk}$ |
+| Vacancies | $d=2,3$ | $0<\alpha\le\beta_d$ | $T^{k/(\alpha+2/d)}$ | Polynomial bound open |
+| Vacancies | $d\ge4$ | $\alpha_c(d)\le\alpha\le\beta_d$ | $T^{k/(\alpha+2/d)}$ | Polynomial bound open |
+| Vacancies | $d\ge4$ | $0<\alpha<\alpha_c(d)$ | $T^{k/\theta(d,\alpha)}$ | Polynomial bound open |
+
+</div>
+
+Here $\beta_2=3-2\sqrt2\approx0.172$, $\beta_d=1-1/(d-1)$ for $d\ge3$ (so $\beta_3=1/2$), and $\alpha_c(d)=1-1/d-2/d^2$. The polynomial upper exponent $\Gamma(d,\alpha)$ is finite and independent of $k$ and $p$, but not sharp. In the last row,
 
 $$
-\alpha>3-2\sqrt2\quad(d=2),\qquad
-\alpha>1-\frac1{d-1}\quad(d\ge3).
+\theta(d,\alpha)=\frac{\alpha+1+1/d}
+{1+\max\{1/(\alpha+1),\;1/(1+2/d)\}}.
 $$
 
-These are sufficient ranges; the endpoints remain open. With vacancies, the moment is conditioned on the origin being occupied at the observation time. The upper powers here are not the sharper full-occupancy powers displayed above.
-
-</details>
-
-<figure className="research-figure-placeholder" id="figure-moments" aria-labelledby="caption-moments">
-  <div className="research-figure-placeholder__panel">Interactive plot planned · Does rescaled cluster growth level off?</div>
-  <figcaption id="caption-moments">Compare particle-sampled moments with the conjectured scale across independent runs. The display will identify finite-system saturation separately from the growth regime.</figcaption>
-</figure>
+“Open” refers to a polynomial upper bound in the current notes. The vacancy lower bounds for $k\ge1$ follow from the first-moment estimates by Jensen’s inequality; the full-occupancy bounds hold for every $k>0$.
 
 ## The geometry left behind
 
@@ -98,24 +109,31 @@ At full occupancy, merger bonds accumulate into a limiting spanning forest. Our 
 
 Whether this forest is connected remains open. In two dimensions, we can connect that question to growth: the conjectured first-moment upper bound would force the interfaces between distinct clusters to disappear, and hence imply connectivity. This is one reason sharp moment estimates matter beyond cluster size.
 
-<figure className="research-figure-placeholder" id="figure-geometry" aria-labelledby="caption-geometry">
-  <div className="research-figure-placeholder__panel">Interactive view planned · Explore the merger tree</div>
-  <figcaption id="caption-geometry">Switch between cluster colours and merger bonds, then compare lattice distance with the unique tree path between two connected particles.</figcaption>
-</figure>
+<ClusterClusterSim view="geometry" title="The tree inside the aggregate">
+  Hover over a cluster to reveal its merger tree. Replay shows how the full-occupancy aggregate forms.
+</ClusterClusterSim>
 
-## Can momentum explain the slowdown?
+## When momentum drives the motion
 
-We also study models in which particles carry random initial momenta. A cluster has mass $m$, total momentum $P$, and average velocity mark $v=P/m$. Mergers conserve mass and momentum:
+We also study a model in which particles carry random initial momenta. A cluster of mass $m$ and total momentum $P$ has velocity $v=P/m$. It attempts a step in a coordinate direction $e$ at rate $(v\cdot e)_+=\max\{v\cdot e,0\}$, so its mean drift when unblocked is $v$. The collision rule is unchanged, and mergers conserve mass and momentum:
 
 $$
 v_{\mathrm{new}}=\frac{m v+n w}{m+n}.
 $$
 
-One variant uses symmetric jumps at total rate $|v|^2$; another favours the direction of $v$ and has that mean drift when unblocked. Both dissipate kinetic energy on merging.
+Opposing momenta can cancel on merging, producing slowdown through the dynamics. Each merger also dissipates kinetic energy.
 
-For a predetermined set of $m$ independent, identically distributed centred marks with finite variance, the expected squared average is proportional to $1/m$, suggesting a link to $\alpha=1$ for the symmetric-jump variant. Actual clusters are selected by the dynamics, so this cancellation cannot simply be assumed for them.
+For independent, identically distributed bounded or Gaussian initial velocities, we construct the full-occupancy process on the infinite lattice in every dimension. It is unique within the stationary finite-cluster class with compatible driving randomness, and every positive cluster-size moment stays finite at every finite time. The velocities need not have mean zero.
 
-At full occupancy, our current arguments construct infinite-volume versions and prove that all positive cluster-size moments are finite at every finite time for both variants, for independent, identically distributed centred marks that are bounded or Gaussian. Their sharp growth laws, and general higher-dimensional systems with vacancies, remain open.
+For initial velocities uniform in the unit ball, we also prove, for every $k>0$ and $t\ge1$,
+
+$$
+M_k(t)\ge c_{d,k}\,t^{dk/(d+1)},\qquad c_{d,k}>0.
+$$
+
+In two dimensions, the mean cluster size therefore grows at least as $t^{2/3}$. Our upper bounds guarantee finite moments but do not yet give a sharp growth law.
+
+For bounded velocities, we also obtain short-time results with sufficiently few vacancies, and all-time results when motion is restricted to one coordinate axis. A general all-time construction with vacancies in higher dimensions remains open.
 
 ## References
 
@@ -125,4 +143,4 @@ At full occupancy, our current arguments construct infinite-volume versions and 
 4. A. Hammond and F. Rezakhanlou. *Kinetic Limit for a System of Coagulating Planar Brownian Particles*. **Journal of Statistical Physics 124**, 997–1040 (2006). [Paper](https://doi.org/10.1007/s10955-005-0105-1) · [Open preprint](https://arxiv.org/abs/math/0507522).
 5. A. Hammond. *Coagulation and diffusion: A probabilistic perspective on the Smoluchowski PDE*. **Probability Surveys 14**, 205–288 (2017). [Survey](https://doi.org/10.1214/15-PS263) · [Open preprint](https://arxiv.org/abs/1401.0829).
 
-The growth, geometry, and momentum results presented as our work above refer to my ongoing thesis notes, rather than to the external papers in this list.
+The growth, geometry, and momentum results presented as our work above refer to my ongoing thesis notes, rather than to the external papers in this list. **Full proofs of these thesis results will be posted soon.**

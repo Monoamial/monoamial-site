@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Watch the cluster–cluster model evolve and explore the tree formed by aggregation.">
+  <title>Cluster–cluster model · Noam Borgnia</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="research-lab">
+    <header class="page-header">
+      <p class="eyebrow">Noam Borgnia · Master's thesis under Noam Berger</p>
+      <h1>Cluster–cluster model<span class="title-dot">.</span></h1>
+      <p class="intro">Clusters move together, merge on contact, and leave a tree of bonds behind.</p>
+    </header>
+
+    <nav class="experiment-tabs" role="tablist" aria-label="Simulations">
+      <button type="button" class="tab active" id="tab-dynamics" role="tab" aria-selected="true" aria-controls="figure-dynamics" data-panel="figure-dynamics">The model</button>
+      <button type="button" class="tab" id="tab-geometry" role="tab" aria-selected="false" aria-controls="figure-geometry" tabindex="-1" data-panel="figure-geometry">Aggregate geometry</button>
+    </nav>
+
+    <section class="experiment-panel" id="figure-dynamics" role="tabpanel" aria-labelledby="tab-dynamics">
+      <div class="section-heading"><h2>Move together. Merge on contact.</h2><p>A cluster of mass <i>m</i> attempts a move at rate <i>m</i><sup>−α</sup>.</p></div>
+      <div class="simulation-card model-card">
+        <div class="canvas-wrap"><canvas id="dynamics-canvas" width="640" height="640" role="img" aria-label="Cluster motion on a periodic square lattice. Colours identify clusters; lines record merger bonds."></canvas></div>
+        <div class="model-controls" aria-label="Model controls">
+          <div class="sliders">
+            <div class="control"><label for="dynamics-side">Lattice size <output id="dynamics-side-value" for="dynamics-side">40 × 40</output></label><input id="dynamics-side" type="range" min="16" max="96" step="8" value="40"></div>
+            <div class="control"><label for="dynamics-occupancy">Initial occupancy <output id="dynamics-occupancy-value" for="dynamics-occupancy">35%</output></label><input id="dynamics-occupancy" type="range" min="0.05" max="1" step="0.05" value="0.35"></div>
+            <div class="control"><label for="dynamics-alpha">α <output id="dynamics-alpha-value" for="dynamics-alpha">1.00</output></label><input id="dynamics-alpha" type="range" min="0.1" max="3" step="0.05" value="1"></div>
+          </div>
+          <div class="playback"><button class="button primary" id="dynamics-play" type="button">Start</button><button class="button" id="dynamics-reset" type="button">Reset</button></div>
+        </div>
+      </div>
+      <p class="caption" id="dynamics-status" aria-live="polite">Each occupied site starts as a separate cluster. Opposite edges wrap around.</p>
+    </section>
+
+    <section class="experiment-panel" id="figure-geometry" role="tabpanel" aria-labelledby="tab-geometry" hidden>
+      <div class="section-heading"><h2>The tree inside the aggregate.</h2><p>Every merger adds one bond.</p></div>
+      <div class="simulation-card geometry-card">
+        <div class="canvas-wrap"><canvas id="geometry-canvas" width="640" height="640" tabindex="0" role="img" aria-label="A completed merger tree on a fully occupied 48 by 48 periodic lattice. Hover a cluster or tap it to reveal its bonds. Press X or use X-ray all to reveal every tree." aria-describedby="geometry-hint"></canvas></div>
+        <div class="geometry-controls">
+          <div class="playback"><button type="button" class="button primary" id="geometry-play" disabled>Replay</button><button type="button" class="button" id="geometry-finish" disabled>Show full tree</button></div>
+          <button type="button" class="button xray-toggle" id="geometry-xray" aria-pressed="false">X-ray all</button>
+        </div>
+      </div>
+      <p class="caption" id="geometry-hint">Hover or tap a cluster to see through it. Full occupancy · 48 × 48 · α = 1.</p>
+      <p class="sr-only" id="geometry-status" aria-live="polite">Preparing the complete tree.</p>
+    </section>
+
+    <figure class="static-figure"><a href="../figures/low-density-overview.png"><img src="../figures/low-density-overview.png" width="4224" height="2288" alt="Clusters on a 768 by 768 lattice at 10 percent initial occupancy and time 25,000, alongside an enlarged central region." loading="lazy"></a><figcaption>768 × 768 lattice · 10% initial occupancy · α = 1 · t = 25,000</figcaption></figure>
+    <footer class="page-footer"><p><a href="/research/cluster-cluster-aggregation/">Read the research post</a> · Noam Borgnia</p></footer>
+    <noscript><p class="caption">Enable JavaScript to run the simulations. The lattice figure remains available above.</p></noscript>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

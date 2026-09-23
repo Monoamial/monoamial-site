@@ -1,0 +1,51 @@
+---
+import SimFrame from './SimFrame.astro';
+
+interface Props {
+  view: 'dynamics' | 'geometry';
+  title: string;
+}
+const { view, title } = Astro.props;
+const src = `/simulations/cluster-cluster/interactive/index.html?view=${view}&embed=1`;
+---
+<div id={`figure-${view}`} class="cluster-simulation">
+  <SimFrame title={title}>
+    <iframe
+      data-cca-simulation
+      src={src}
+      title={title}
+      loading="lazy"
+      width="100%"
+      height={view === 'dynamics' ? 800 : 710}
+    ></iframe>
+    <span slot="caption"><slot /></span>
+  </SimFrame>
+</div>
+
+<script>
+  const frames = Array.from(document.querySelectorAll<HTMLIFrameElement>('iframe[data-cca-simulation]'));
+  window.addEventListener('message', event => {
+    if (event.origin !== location.origin || event.data?.type !== 'cca:resize') return;
+    const frame = frames.find(item => item.contentWindow === event.source);
+    if (!frame || new URL(frame.src, document.baseURI).origin !== event.origin) return;
+    const height = Number(event.data.height);
+    if (Number.isFinite(height) && height >= 200 && height <= 12000) {
+      frame.style.height = `${Math.ceil(height) + 2}px`;
+    }
+  });
+  for (const frame of frames) {
+    const measure = () => frame.contentWindow?.postMessage({ type: 'cca:measure' }, location.origin);
+    frame.addEventListener('load', measure);
+    measure();
+  }
+</script>
+
+<style>
+  iframe { display: block; width: 100%; border: 0; border-radius: 4px; background: var(--board-2); }
+  .cluster-simulation { margin: 2rem 0; }
+  @media (max-width: 36rem) {
+    .cluster-simulation :global(.sim-frame) { padding: 1.1rem 0.7rem 0.8rem; }
+    .cluster-simulation :global(.sim-title) { padding-right: 0; padding-top: 1.5rem; }
+    .cluster-simulation :global(.kind-tag) { font-size: 0.56rem; }
+  }
+</style>

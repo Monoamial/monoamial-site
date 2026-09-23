@@ -1,0 +1,105 @@
+/* The same chalkboard, research accent and self-hosted type as monoamial.com. */
+@font-face {
+  font-family: 'Spectral'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('/fonts/spectral-400-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Spectral'; font-style: normal; font-weight: 600; font-display: swap;
+  src: url('/fonts/spectral-600-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('/fonts/jetbrains-mono-400-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cormorant Garamond'; font-style: normal; font-weight: 500; font-display: swap;
+  src: url('/fonts/cormorant-garamond-500-latin.woff2') format('woff2');
+}
+:root { color-scheme: dark; background: #1f2a2e; }
+body { margin: 0; }
+:root.embedded-page { background: transparent; }
+.research-lab {
+  --lab-bg: #1f2a2e;
+  --lab-panel: #25322f;
+  --lab-canvas: #182124;
+  --lab-text: #f2efe6;
+  --lab-muted: #c9c8bd;
+  --lab-faint: #8c9690;
+  --lab-border: #3a4a45;
+  --lab-accent: #f4c95d;
+  --lab-bond: #f2efe6;
+  --lab-grid: #34423f;
+  --lab-font: 'Spectral', Georgia, 'Times New Roman', serif;
+  --lab-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --lab-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  max-width: 860px; margin: 0 auto; padding: 48px 24px 24px;
+  color: var(--lab-text); font: 16px/1.7 var(--lab-font); -webkit-font-smoothing: antialiased;
+}
+.research-lab *, .research-lab *::before, .research-lab *::after { box-sizing: border-box; }
+.research-lab [hidden] { display: none !important; }
+.research-lab h1, .research-lab h2, .research-lab p { margin: 0; }
+.research-lab h1, .research-lab h2 { font-family: var(--lab-display); font-weight: 500; letter-spacing: .01em; }
+.research-lab h1 { margin: 12px 0; font-size: clamp(36px, 6vw, 58px); line-height: 1.08; }
+.research-lab h2 { color: var(--lab-accent); font-size: clamp(25px, 4vw, 32px); line-height: 1.2; }
+.research-lab .title-dot { color: var(--lab-accent); }
+.research-lab .eyebrow { color: var(--lab-faint); font: 10px/1.7 var(--lab-mono); letter-spacing: .08em; }
+.research-lab .intro { color: var(--lab-muted); }
+.research-lab .page-header { padding-bottom: 28px; }
+.research-lab .experiment-tabs { display: flex; border-bottom: 1px solid var(--lab-border); margin-bottom: 28px; }
+.research-lab button, .research-lab input { font: inherit; }
+.research-lab button { cursor: pointer; }
+.research-lab .tab { flex: 1; padding: 12px 8px; color: var(--lab-muted); border: 0; background: transparent; border-bottom: 2px solid transparent; font: 11px/1.6 var(--lab-mono); letter-spacing: .06em; text-transform: uppercase; }
+.research-lab .tab.active { border-bottom-color: var(--lab-accent); color: var(--lab-accent); }
+.research-lab .section-heading { margin-bottom: 18px; }
+.research-lab .section-heading p { margin-top: 5px; color: var(--lab-muted); }
+.research-lab .simulation-card { border: 1px solid var(--lab-border); border-radius: 8px; background: var(--lab-panel); padding: 18px; }
+.research-lab .canvas-wrap { width: 100%; max-width: 600px; margin: 0 auto; aspect-ratio: 1; background: var(--lab-canvas); border: 1px solid var(--lab-border); border-radius: 6px; overflow: hidden; }
+.research-lab canvas { display: block; width: 100%; height: 100%; }
+.research-lab #geometry-canvas { cursor: crosshair; touch-action: pan-y; }
+.research-lab .model-controls { max-width: 600px; margin: 19px auto 0; }
+.research-lab .sliders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.research-lab .control { min-width: 0; }
+.research-lab label { display: flex; justify-content: space-between; align-items: baseline; gap: 7px; color: var(--lab-muted); font: 11px/1.6 var(--lab-mono); }
+.research-lab output { color: var(--lab-accent); font: inherit; white-space: nowrap; }
+.research-lab input[type='range'] { -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 28px; background: transparent; margin: 8px 0 0; cursor: pointer; accent-color: var(--lab-accent); }
+.research-lab input[type='range']::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--lab-border); }
+.research-lab input[type='range']::-moz-range-track { height: 4px; border-radius: 2px; background: var(--lab-border); }
+.research-lab input[type='range']::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; margin-top: -6px; border-radius: 50%; background: var(--lab-accent); border: 2px solid var(--lab-bg); }
+.research-lab input[type='range']::-moz-range-thumb { width: 13px; height: 13px; border-radius: 50%; background: var(--lab-accent); border: 2px solid var(--lab-bg); }
+.research-lab .playback { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.research-lab .model-controls .playback { margin-top: 16px; }
+.research-lab .button { padding: 9px 15px; min-height: 40px; border-radius: 6px; border: 1px solid var(--lab-border); color: var(--lab-text); background: rgba(255, 255, 255, .04); font: 11px/1.5 var(--lab-mono); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; transition: border-color .15s ease, color .15s ease; }
+.research-lab .button:hover:not(:disabled) { border-color: var(--lab-accent); color: var(--lab-accent); }
+.research-lab .button.primary { min-width: 88px; color: var(--lab-bg); background: var(--lab-accent); border-color: var(--lab-accent); }
+.research-lab .button.primary:hover:not(:disabled) { color: var(--lab-bg); background: #ffda7b; border-color: #ffda7b; }
+.research-lab button:disabled { opacity: .45; cursor: default; }
+.research-lab .geometry-controls { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; max-width: 600px; margin: 16px auto 0; }
+.research-lab .xray-toggle[aria-pressed='true'] { border-color: var(--lab-accent); color: var(--lab-accent); }
+.research-lab .caption { color: var(--lab-muted); font-size: 14px; margin-top: 10px; line-height: 1.5; }
+.research-lab .static-figure { margin: 38px 0 0; padding-top: 28px; border-top: 1px solid var(--lab-border); }
+.research-lab .static-figure img { display: block; width: 100%; height: auto; border-radius: 5px; background: var(--lab-canvas); }
+.research-lab figcaption { margin-top: 8px; color: var(--lab-muted); font-size: 14px; }
+.research-lab .page-footer { margin-top: 24px; color: var(--lab-faint); font-size: 14px; }
+.research-lab a { color: var(--lab-accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.research-lab :focus-visible { outline: 2px solid var(--lab-accent); outline-offset: 4px; }
+.research-lab ::selection { color: var(--lab-bg); background: var(--lab-accent); }
+.research-lab .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+/* The host's SimFrame supplies the outer card; keep iframe chrome transparent. */
+.research-lab.embedded { max-width: none; padding: 0; background: transparent; }
+.research-lab.embedded .simulation-card { padding: 0; border: 0; background: transparent; border-radius: 0; }
+.research-lab.embedded .page-header, .research-lab.embedded .experiment-tabs, .research-lab.embedded .page-footer, .research-lab.embedded .static-figure, .research-lab.embedded .section-heading { display: none; }
+@media (max-width: 620px) {
+  .research-lab { padding: 26px 16px 20px; }
+  .research-lab .simulation-card { padding: 12px; }
+  .research-lab .sliders { grid-template-columns: 1fr; gap: 10px; }
+  .research-lab label { font-size: 12px; }
+  .research-lab .model-controls { margin-top: 15px; }
+  .research-lab input[type='range'] { margin-top: 2px; }
+  .research-lab .geometry-controls { gap: 8px; }
+  .research-lab .geometry-controls .button { padding: 9px 10px; font-size: 10px; }
+  .research-lab .geometry-controls .button.primary { min-width: 67px; }
+  .research-lab .playback { gap: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .research-lab *, .research-lab *::before, .research-lab *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+}
