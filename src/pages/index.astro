@@ -7,24 +7,28 @@ const pillars = [
     href: '/research/',
     kicker: '01',
     title: 'Research',
+    description: 'Probability and statistical mechanics, from growing clusters to phase transitions in the Ising model.',
     accent: 'var(--accent)',
   },
   {
     href: '/code/',
     kicker: '02',
     title: 'Code & Simulation',
+    description: 'Interactive models and numerical experiments that explore how simple rules produce collective behavior.',
     accent: 'var(--accent-2)',
   },
   {
     href: '/writing/',
     kicker: '03',
     title: 'Writing',
+    description: 'Expository notes and essays on mathematics and physics.',
     accent: 'var(--accent-3)',
   },
   {
     href: '/teaching/',
     kicker: '04',
     title: 'Teaching',
+    description: 'Problems, explanations, and materials for learning mathematics.',
     accent: 'var(--accent-4)',
   },
 ];
@@ -48,7 +52,8 @@ const pillars = [
     {pillars.map((p) => (
       <a href={p.href} class="note-card pillar" style={`--c:${p.accent}`}>
         <span class="kicker">{p.kicker}</span>
-        <h3>{p.title}</h3>
+        <h2>{p.title}</h2>
+        <p>{p.description}</p>
         <span class="go">open &rarr;</span>
       </a>
     ))}
@@ -96,7 +101,7 @@ const pillars = [
   @media (max-width: 620px) {
     .pillars { grid-template-columns: 1fr; }
   }
-  .pillar { position: relative; border-top: 3px solid var(--c); }
+  .pillar { position: relative; display: flex; flex-direction: column; border-top: 3px solid var(--c); }
   .pillar .kicker {
     font-family: var(--font-label);
     font-size: 0.7rem;
@@ -104,8 +109,10 @@ const pillars = [
     color: var(--c);
     opacity: 0.85;
   }
-  .pillar h3 { color: var(--c); margin: 0.1em 0 0.3em; }
+  .pillar h2 { color: var(--c); font-size: clamp(1.7rem, 3.5vw, 2.1rem); margin: 0.1em 0 0.3em; }
+  .pillar p { margin: 0 0 1rem; }
   .pillar .go {
+    margin-top: auto;
     font-family: var(--font-label);
     font-size: 0.7rem;
     text-transform: uppercase;
@@ -114,4 +121,3 @@ const pillars = [
   }
   .pillar:hover .go { color: var(--c); }
 </style>
-

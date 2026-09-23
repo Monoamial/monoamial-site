@@ -6,9 +6,10 @@ import { getCollection } from 'astro:content';
 const entries = (await getCollection('code', (e) => !e.data.draft))
   .sort((a, b) => +b.data.date - +a.data.date);
 ---
-<Base title="Code & Simulation" description="Numerical experiments, Monte Carlo simulations, and scientific visualization.">
+<Base title="Code & Simulation" description="Interactive models and numerical experiments that explore how simple rules produce collective behavior.">
   <header class="page-head">
     <h1>Code &amp; Simulation</h1>
+    <p>Interactive models and numerical experiments that explore how simple rules produce collective behavior.</p>
   </header>
   <div class="list">
     {entries.length === 0 && <p class="empty">No entries yet.</p>}

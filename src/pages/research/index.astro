@@ -6,9 +6,10 @@ import { getCollection } from 'astro:content';
 const entries = (await getCollection('research', (e) => !e.data.draft))
   .sort((a, b) => +b.data.date - +a.data.date);
 ---
-<Base title="Research" description="Probability and mathematical statistical mechanics.">
+<Base title="Research" description="Probability and statistical mechanics, from growing clusters to phase transitions in the Ising model.">
   <header class="page-head">
     <h1>Research</h1>
+    <p>Probability and statistical mechanics, from growing clusters to phase transitions in the Ising model.</p>
   </header>
   <div class="list">
     {entries.length === 0 && <p class="empty">No entries yet.</p>}

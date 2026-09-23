@@ -6,9 +6,10 @@ import { getCollection } from 'astro:content';
 const entries = (await getCollection('teaching', (e) => !e.data.draft))
   .sort((a, b) => +b.data.date - +a.data.date);
 ---
-<Base title="Teaching" description="Courses, problem sets, and teaching materials.">
+<Base title="Teaching" description="Problems, explanations, and materials for learning mathematics.">
   <header class="page-head">
     <h1>Teaching</h1>
+    <p>Problems, explanations, and materials for learning mathematics.</p>
   </header>
   <div class="list">
     {entries.length === 0 && <p class="empty">No entries yet.</p>}
