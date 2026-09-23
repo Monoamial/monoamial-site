@@ -1,0 +1,1045 @@
+---
+import SimFrame from './SimFrame.astro';
+---
+
+<SimFrame title="Drossel–Schwabl forest-fire simulation" kind="live">
+  <div class="forest-fire-sim">
+    <div class="ff-dashboard">
+      <section class="ff-control-panel ff-panel" aria-label="Forest-fire simulation controls">
+        <h2 class="ff-section-heading">Parameters</h2>
+
+        <fieldset class="ff-control">
+          <legend class="ff-visually-hidden">Growth probability</legend>
+          <div class="ff-control-heading">
+            <span class="ff-control-copy"><strong>Growth probability</strong><em>p</em></span>
+            <input class="ff-number-input ff-p-number" type="number" inputmode="decimal" min="0" max="0.1" step="0.001" value="0.010" aria-label="Growth probability p" />
+          </div>
+          <input class="ff-range ff-p-input" type="range" min="0" max="0.1" step="0.001" value="0.01" aria-label="Growth probability p slider" />
+          <span class="ff-range-labels"><i>0</i><i>0.1</i></span>
+        </fieldset>
+
+        <fieldset class="ff-control">
+          <legend class="ff-visually-hidden">Lightning probability</legend>
+          <div class="ff-control-heading">
+            <span class="ff-control-copy"><strong>Lightning probability</strong><em>f</em></span>
+            <input class="ff-number-input ff-f-number" type="number" inputmode="decimal" min="0" max="0.002" step="0.00001" value="0.00100" aria-label="Lightning probability f" />
+          </div>
+          <input class="ff-range ff-f-input" type="range" min="0" max="0.002" step="0.00001" value="0.001" aria-label="Lightning probability f slider" />
+          <span class="ff-range-labels"><i>0</i><i>0.002</i></span>
+        </fieldset>
+
+        <fieldset class="ff-control">
+          <legend class="ff-visually-hidden">Lattice side length</legend>
+          <div class="ff-control-heading">
+            <span class="ff-control-copy"><strong>Lattice size</strong><em>N × N</em></span>
+            <span class="ff-value ff-size-value" aria-hidden="true">160</span>
+          </div>
+          <input class="ff-range ff-size-input" type="range" min="40" max="320" step="20" value="160" aria-label="Lattice side length N" />
+          <span class="ff-range-labels"><i>40</i><i>320</i></span>
+        </fieldset>
+
+        <fieldset class="ff-control ff-speed-control">
+          <legend class="ff-visually-hidden">Simulation speed</legend>
+          <div class="ff-control-heading">
+            <span class="ff-control-copy"><strong>Simulation speed</strong><em>steps / frame</em></span>
+            <span class="ff-value ff-speed-value" aria-hidden="true">1×</span>
+          </div>
+          <input class="ff-range ff-speed-input" type="range" min="1" max="20" step="1" value="1" aria-label="Simulation speed in steps per animation frame" />
+          <span class="ff-range-labels"><i>1×</i><i>20×</i></span>
+        </fieldset>
+
+        <div class="ff-preset-block">
+          <span class="ff-preset-label">REFERENCE TIME-SCALE PRESET</span>
+          <button class="ff-preset-button" type="button">
+            <span>Restore original rates</span>
+            <small>p = 0.010 · f = 0.001</small>
+          </button>
+        </div>
+
+        <div class="ff-button-row">
+          <button class="ff-button ff-primary ff-toggle-button" type="button" aria-label="Pause simulation">
+            <span class="ff-toggle-icon" aria-hidden="true">Ⅱ</span><span class="ff-toggle-text">Pause</span>
+          </button>
+          <button class="ff-button ff-secondary ff-reset-button" type="button">Reset</button>
+        </div>
+
+        <div class="ff-legend" aria-label="Cell state legend">
+          <span><i class="ff-swatch ff-tree-swatch"></i>Tree</span>
+          <span><i class="ff-swatch ff-burning-swatch"></i>Burning</span>
+          <span><i class="ff-swatch ff-empty-swatch"></i>Empty</span>
+        </div>
+      </section>
+
+      <section class="ff-lattice-panel ff-panel" aria-label="Forest-fire lattice">
+        <div class="ff-lattice-heading">
+          <h2 class="ff-section-heading">Lattice</h2>
+          <div class="ff-generation">GENERATION <strong class="ff-generation-value">0</strong></div>
+        </div>
+        <div class="ff-canvas-wrap">
+          <canvas class="ff-lattice-canvas" width="160" height="160" role="img" aria-label="Forest-fire lattice visualization">
+            Forest-fire lattice visualization.
+          </canvas>
+        </div>
+      </section>
+    </div>
+
+    <section class="ff-metrics" aria-label="Simulation metrics">
+      <article class="ff-metric ff-panel">
+        <h3 class="ff-section-heading">Tree density</h3>
+        <p class="ff-metric-symbol">ρ</p>
+        <p class="ff-metric-value ff-density-value">—</p>
+        <div class="ff-meter" role="meter" aria-label="Tree density" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0">
+          <span class="ff-density-meter"></span>
+        </div>
+        <p class="ff-metric-foot"><span class="ff-tree-count">—</span><span>TREES</span></p>
+      </article>
+
+      <article class="ff-metric ff-panel">
+        <h3 class="ff-section-heading">Mean cluster size</h3>
+        <p class="ff-metric-symbol">s̄</p>
+        <p class="ff-metric-value ff-cluster-value">—</p>
+        <div class="ff-spark-wrap">
+          <canvas class="ff-sparkline" width="360" height="100" aria-hidden="true"></canvas>
+        </div>
+        <p class="ff-metric-foot"><span class="ff-cluster-count">—</span><span>CLUSTERS</span></p>
+      </article>
+
+      <article class="ff-metric ff-panel">
+        <h3 class="ff-section-heading">Effective exponent</h3>
+        <p class="ff-metric-symbol">τ</p>
+        <p class="ff-metric-value ff-tau-metric">—</p>
+        <p class="ff-metric-foot"><span>MEAN OF FITS</span><span class="ff-tau-fit-quality">WAITING</span></p>
+      </article>
+
+      <article class="ff-metric ff-panel">
+        <h3 class="ff-section-heading">Estimated cutoff</h3>
+        <p class="ff-metric-symbol"><i>s</i><sub>max</sub></p>
+        <p class="ff-metric-value ff-cutoff-metric">—</p>
+        <p class="ff-metric-foot"><span>CURRENT FIT</span><span class="ff-cutoff-fit-count">WAITING</span></p>
+      </article>
+    </section>
+
+    <section class="ff-analysis ff-panel" aria-label="Cluster-size distribution">
+      <div class="ff-analysis-heading">
+        <h2 class="ff-section-heading">Cluster-size distribution</h2>
+        <span class="ff-sampling-status">EQUILIBRATING · 500 GENERATIONS</span>
+      </div>
+      <div class="ff-plot-heading">
+        <strong>⟨N(s)⟩</strong>
+        <div class="ff-plot-legend" aria-label="Plot legend">
+          <span><i class="ff-legend-observations"></i>samples</span>
+          <span><i class="ff-legend-power"></i>power-law fit</span>
+          <span><i class="ff-legend-cutoff"></i>cutoff fit</span>
+        </div>
+      </div>
+      <div class="ff-plot-wrap">
+        <canvas class="ff-cluster-plot" width="1280" height="320" role="img" aria-label="Log-log cluster-size distribution with fitted effective power-law exponent and estimated cutoff">
+          Cluster-size distribution plot.
+        </canvas>
+      </div>
+      <p class="ff-plot-foot"><span class="ff-cluster-samples">0 SNAPSHOTS</span><span class="ff-fit-label">FIT WAITING FOR STEADY STATE</span></p>
+      <p class="ff-analysis-note">These finite-sample fits are descriptive and do not establish asymptotic criticality.</p>
+    </section>
+
+    <script is:inline>
+      (() => {
+        const frame = document.currentScript.closest('.sim-frame');
+        if (!frame) return;
+        const sim = frame.querySelector('.forest-fire-sim');
+        if (!sim) return;
+
+        const EMPTY = 0;
+        const TREE = 1;
+        const BURNING = 2;
+        const EQUILIBRATION_GENERATIONS = 500;
+        const ui = {
+          lattice: sim.querySelector('.ff-lattice-canvas'),
+          spark: sim.querySelector('.ff-sparkline'),
+          clusterPlot: sim.querySelector('.ff-cluster-plot'),
+          p: sim.querySelector('.ff-p-input'),
+          f: sim.querySelector('.ff-f-input'),
+          pNumber: sim.querySelector('.ff-p-number'),
+          fNumber: sim.querySelector('.ff-f-number'),
+          size: sim.querySelector('.ff-size-input'),
+          speed: sim.querySelector('.ff-speed-input'),
+          sizeValue: sim.querySelector('.ff-size-value'),
+          speedValue: sim.querySelector('.ff-speed-value'),
+          generation: sim.querySelector('.ff-generation-value'),
+          density: sim.querySelector('.ff-density-value'),
+          densityMeter: sim.querySelector('.ff-density-meter'),
+          meter: sim.querySelector('.ff-meter'),
+          treeCount: sim.querySelector('.ff-tree-count'),
+          cluster: sim.querySelector('.ff-cluster-value'),
+          clusterCount: sim.querySelector('.ff-cluster-count'),
+          clusterSamples: sim.querySelector('.ff-cluster-samples'),
+          fitLabel: sim.querySelector('.ff-fit-label'),
+          samplingStatus: sim.querySelector('.ff-sampling-status'),
+          tauMetric: sim.querySelector('.ff-tau-metric'),
+          cutoffMetric: sim.querySelector('.ff-cutoff-metric'),
+          tauFitQuality: sim.querySelector('.ff-tau-fit-quality'),
+          cutoffFitCount: sim.querySelector('.ff-cutoff-fit-count'),
+          toggle: sim.querySelector('.ff-toggle-button'),
+          toggleIcon: sim.querySelector('.ff-toggle-icon'),
+          toggleText: sim.querySelector('.ff-toggle-text'),
+          reset: sim.querySelector('.ff-reset-button'),
+          preset: sim.querySelector('.ff-preset-button')
+        };
+        const context = ui.lattice.getContext('2d', { alpha: false });
+        const style = getComputedStyle(sim);
+        const palette = {
+          tree: readRgbToken('--sim-forest-fire-tree'),
+          burning: readRgbToken('--sim-forest-fire-burning'),
+          empty: readRgbToken('--sim-forest-fire-empty'),
+          observations: style.getPropertyValue('--sim-forest-fire-observations').trim(),
+          powerFit: style.getPropertyValue('--sim-forest-fire-power-fit').trim(),
+          cutoffFit: style.getPropertyValue('--sim-forest-fire-cutoff-fit').trim(),
+          axis: style.getPropertyValue('--sim-forest-fire-axis').trim(),
+          sparkline: style.getPropertyValue('--sim-forest-fire-curve').trim()
+        };
+        const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+        let n;
+        let cells;
+        let next;
+        let generation = 0;
+        let running = !motionPreference.matches;
+        let clusterHistory = [];
+        let lastStats = 0;
+        let clusterSizes = [];
+        let distributionSum = [];
+        let distributionSamples = 0;
+        let tauSum = 0;
+        let fitSamples = 0;
+        let nextDistributionSample = 0;
+        let inView = !('IntersectionObserver' in window);
+        let frameHandle = null;
+
+        function readRgbToken(name) {
+          const value = style.getPropertyValue(name).trim().slice(1);
+          return [
+            Number.parseInt(value.slice(0, 2), 16),
+            Number.parseInt(value.slice(2, 4), 16),
+            Number.parseInt(value.slice(4, 6), 16)
+          ];
+        }
+
+        function initialize() {
+          n = Number(ui.size.value);
+          cells = new Uint8Array(n * n);
+          next = new Uint8Array(n * n);
+          for (let i = 0; i < cells.length; i++) cells[i] = Math.random() < 0.5 ? TREE : EMPTY;
+          generation = 0;
+          clusterHistory = [];
+          clusterSizes = [];
+          distributionSum = [];
+          distributionSamples = 0;
+          tauSum = 0;
+          fitSamples = 0;
+          nextDistributionSample = EQUILIBRATION_GENERATIONS + randomSampleGap();
+          lastStats = -10;
+          ui.tauMetric.textContent = '—';
+          ui.cutoffMetric.textContent = '—';
+          ui.tauFitQuality.textContent = 'WAITING';
+          ui.cutoffFitCount.textContent = 'WAITING';
+          ui.samplingStatus.textContent = `EQUILIBRATING · ${EQUILIBRATION_GENERATIONS} GENERATIONS LEFT`;
+          ui.clusterSamples.textContent = '0 SNAPSHOTS';
+          ui.fitLabel.textContent = 'FIT WAITING FOR STEADY STATE';
+          ui.sizeValue.textContent = String(n);
+          updateStats(true);
+          draw();
+        }
+
+        function step() {
+          const p = Number(ui.p.value);
+          const f = Number(ui.f.value);
+          for (let y = 0; y < n; y++) {
+            const up = y ? y - 1 : n - 1;
+            const down = y === n - 1 ? 0 : y + 1;
+            for (let x = 0; x < n; x++) {
+              const i = y * n + x;
+              const state = cells[i];
+              if (state === BURNING) {
+                next[i] = EMPTY;
+                continue;
+              }
+              if (state === EMPTY) {
+                next[i] = Math.random() < p ? TREE : EMPTY;
+                continue;
+              }
+              const left = x ? x - 1 : n - 1;
+              const right = x === n - 1 ? 0 : x + 1;
+              const spread = cells[y * n + left] === BURNING ||
+                cells[y * n + right] === BURNING ||
+                cells[up * n + x] === BURNING ||
+                cells[down * n + x] === BURNING;
+              next[i] = spread || Math.random() < f ? BURNING : TREE;
+            }
+          }
+          [cells, next] = [next, cells];
+          generation++;
+        }
+
+        function draw() {
+          if (ui.lattice.width !== n || ui.lattice.height !== n) {
+            ui.lattice.width = n;
+            ui.lattice.height = n;
+          }
+          const image = context.createImageData(n, n);
+          const data = image.data;
+          for (let i = 0, d = 0; i < cells.length; i++, d += 4) {
+            const color = cells[i] === TREE ? palette.tree : cells[i] === BURNING ? palette.burning : palette.empty;
+            data[d] = color[0];
+            data[d + 1] = color[1];
+            data[d + 2] = color[2];
+            data[d + 3] = 255;
+          }
+          context.putImageData(image, 0, 0);
+          ui.generation.textContent = generation.toLocaleString();
+        }
+
+        function clusterStats() {
+          const seen = new Uint8Array(cells.length);
+          const queue = new Int32Array(cells.length);
+          clusterSizes = [];
+          let total = 0;
+          for (let start = 0; start < cells.length; start++) {
+            if (cells[start] !== TREE || seen[start]) continue;
+            let head = 0;
+            let tail = 1;
+            let size = 0;
+            queue[0] = start;
+            seen[start] = 1;
+            while (head < tail) {
+              const i = queue[head++];
+              const y = Math.floor(i / n);
+              const x = i - y * n;
+              const left = y * n + (x ? x - 1 : n - 1);
+              const right = y * n + (x === n - 1 ? 0 : x + 1);
+              const up = (y ? y - 1 : n - 1) * n + x;
+              const down = (y === n - 1 ? 0 : y + 1) * n + x;
+              size++;
+              if (cells[left] === TREE && !seen[left]) { seen[left] = 1; queue[tail++] = left; }
+              if (cells[right] === TREE && !seen[right]) { seen[right] = 1; queue[tail++] = right; }
+              if (cells[up] === TREE && !seen[up]) { seen[up] = 1; queue[tail++] = up; }
+              if (cells[down] === TREE && !seen[down]) { seen[down] = 1; queue[tail++] = down; }
+            }
+            clusterSizes.push(size);
+            total += size;
+          }
+          return { clusters: clusterSizes.length, average: clusterSizes.length ? total / clusterSizes.length : 0 };
+        }
+
+        function updateStats(force = false) {
+          if (!force && generation - lastStats < 5) return;
+          lastStats = generation;
+          let trees = 0;
+          for (const cell of cells) if (cell === TREE) trees++;
+          const density = trees / cells.length;
+          const stats = clusterStats();
+          ui.density.textContent = density.toFixed(3);
+          ui.densityMeter.style.width = `${density * 100}%`;
+          ui.meter.setAttribute('aria-valuenow', density.toFixed(3));
+          ui.treeCount.textContent = trees.toLocaleString();
+          ui.cluster.textContent = stats.average ? (stats.average < 100 ? stats.average.toFixed(1) : stats.average.toFixed(0)) : '0';
+          ui.clusterCount.textContent = stats.clusters.toLocaleString();
+          clusterHistory.push(stats.average);
+          if (clusterHistory.length > 80) clusterHistory.shift();
+          accumulateDistribution();
+          drawSparkline();
+          drawClusterDistribution();
+        }
+
+        function setupCanvas(canvas) {
+          const rect = canvas.getBoundingClientRect();
+          const d = Math.min(window.devicePixelRatio || 1, 2);
+          const width = Math.max(1, Math.round(rect.width * d));
+          const height = Math.max(1, Math.round(rect.height * d));
+          if (canvas.width !== width || canvas.height !== height) {
+            canvas.width = width;
+            canvas.height = height;
+          }
+          const c = canvas.getContext('2d');
+          c.clearRect(0, 0, width, height);
+          return { c, width, height, d };
+        }
+
+        function drawSparkline() {
+          const { c, width, height, d } = setupCanvas(ui.spark);
+          if (width < 2 || height < 2 || clusterHistory.length < 2) return;
+          const max = Math.max(...clusterHistory, 1);
+          const min = Math.min(...clusterHistory);
+          const range = Math.max(max - min, 1);
+          c.beginPath();
+          clusterHistory.forEach((value, i) => {
+            const x = i / (clusterHistory.length - 1) * width;
+            const y = height - 4 * d - (value - min) / range * (height - 9 * d);
+            if (i) c.lineTo(x, y);
+            else c.moveTo(x, y);
+          });
+          c.strokeStyle = palette.sparkline;
+          c.lineWidth = 1.5 * d;
+          c.stroke();
+        }
+
+        function distributionBins() {
+          return Math.max(40, Math.min(180, Math.round(n * 0.75)));
+        }
+
+        function randomSampleGap() {
+          return 1 + Math.floor(Math.random() * 5);
+        }
+
+        function accumulateDistribution() {
+          if (generation < EQUILIBRATION_GENERATIONS) {
+            ui.samplingStatus.textContent = `EQUILIBRATING · ${EQUILIBRATION_GENERATIONS - generation} GENERATIONS LEFT`;
+            ui.clusterSamples.textContent = '0 SNAPSHOTS';
+            return;
+          }
+          ui.samplingStatus.textContent = 'LOG–LOG · RANDOM STEADY-STATE SAMPLES';
+          if (generation < nextDistributionSample) return;
+          nextDistributionSample = generation + randomSampleGap();
+          const bins = distributionBins();
+          if (!distributionSum.length) distributionSum = new Float64Array(bins);
+          const maxS = cells.length;
+          const counts = new Float64Array(bins);
+          const edges = Array.from({ length: bins + 1 }, (_, i) => Math.exp(i / bins * Math.log(maxS + 1)));
+          for (const size of clusterSizes) {
+            const bin = Math.min(bins - 1, Math.floor(Math.log(size) / Math.log(maxS + 1) * bins));
+            counts[bin]++;
+          }
+          for (let i = 0; i < bins; i++) distributionSum[i] += counts[i] / Math.max(1, edges[i + 1] - edges[i]);
+          distributionSamples++;
+        }
+
+        function linearFit(xs, ys) {
+          const count = xs.length;
+          const meanX = xs.reduce((sum, value) => sum + value, 0) / count;
+          const meanY = ys.reduce((sum, value) => sum + value, 0) / count;
+          const denominator = xs.reduce((sum, value) => sum + (value - meanX) ** 2, 0);
+          if (!denominator) return null;
+          const slope = xs.reduce((sum, value, i) => sum + (value - meanX) * (ys[i] - meanY), 0) / denominator;
+          const intercept = meanY - slope * meanX;
+          const sse = ys.reduce((sum, value, i) => sum + (value - (intercept + slope * xs[i])) ** 2, 0);
+          const sst = ys.reduce((sum, value) => sum + (value - meanY) ** 2, 0);
+          return { slope, intercept, sse, r2: sst ? 1 - sse / sst : 1 };
+        }
+
+        function drawClusterDistribution() {
+          const { c, width, height, d } = setupCanvas(ui.clusterPlot);
+          if (width < 2 || height < 2) return;
+          const left = 48 * d;
+          const right = 14 * d;
+          const top = 12 * d;
+          const bottom = 30 * d;
+          const plotWidth = width - left - right;
+          const plotHeight = height - top - bottom;
+          c.strokeStyle = palette.axis;
+          c.lineWidth = d;
+          c.beginPath();
+          c.moveTo(left, top);
+          c.lineTo(left, height - bottom);
+          c.lineTo(width - right, height - bottom);
+          c.stroke();
+          c.fillStyle = palette.axis;
+          c.font = `${9 * d}px "JetBrains Mono", ui-monospace, monospace`;
+          c.fillText('⟨N(s)⟩', 3 * d, 14 * d);
+          c.fillText('s', width - 13 * d, height - 8 * d);
+          ui.clusterSamples.textContent = `${distributionSamples.toLocaleString()} SNAPSHOTS`;
+          if (!distributionSamples) return;
+
+          const bins = distributionBins();
+          const maxS = cells.length;
+          const edges = Array.from({ length: bins + 1 }, (_, i) => Math.exp(i / bins * Math.log(maxS + 1)));
+          const points = [];
+          for (let i = 0; i < bins; i++) {
+            const value = distributionSum[i] / distributionSamples;
+            if (value > 0) points.push({ s: Math.sqrt(edges[i] * edges[i + 1]), n: value });
+          }
+          if (points.length < 6) {
+            ui.fitLabel.textContent = 'FIT COLLECTING DATA';
+            return;
+          }
+          const logCounts = points.map(point => Math.log(point.n));
+          const xMin = 0;
+          const xMax = Math.log10(maxS);
+          const yMin = Math.min(...logCounts) / Math.LN10 - 0.2;
+          const yMax = Math.max(...logCounts) / Math.LN10 + 0.2;
+          const X = size => left + (Math.log10(size) - xMin) / (xMax - xMin) * plotWidth;
+          const Y = value => top + (yMax - Math.log10(value)) / (yMax - yMin) * plotHeight;
+          c.strokeStyle = palette.observations;
+          c.lineWidth = 1.5 * d;
+          c.beginPath();
+          points.forEach((point, i) => i ? c.lineTo(X(point.s), Y(point.n)) : c.moveTo(X(point.s), Y(point.n)));
+          c.stroke();
+          c.fillStyle = palette.observations;
+          for (const point of points) {
+            c.beginPath();
+            c.arc(X(point.s), Y(point.n), 2.6 * d, 0, Math.PI * 2);
+            c.fill();
+          }
+
+          let best = null;
+          for (let k = 3; k <= points.length - 3; k++) {
+            const low = points.slice(0, k + 1);
+            const high = points.slice(k);
+            const power = linearFit(low.map(point => Math.log(point.s)), low.map(point => Math.log(point.n)));
+            const exponential = linearFit(high.map(point => point.s), high.map(point => Math.log(point.n)));
+            if (!power || !exponential || power.slope >= 0 || exponential.slope >= 0) continue;
+            const score = power.sse + exponential.sse + 0.02 * (1 / low.length + 1 / high.length);
+            if (!best || score < best.score) best = { k, power, exponential, score };
+          }
+
+          if (best) {
+            const cutoff = points[best.k].s;
+            const lowStart = points[0].s;
+            const highEnd = points[points.length - 1].s;
+            const powerCurve = size => Math.exp(best.power.intercept) * size ** best.power.slope;
+            const exponentialCurve = size => Math.exp(best.exponential.intercept + best.exponential.slope * size);
+            c.lineWidth = 2 * d;
+            c.setLineDash([6 * d, 4 * d]);
+            c.strokeStyle = palette.powerFit;
+            c.beginPath();
+            c.moveTo(X(lowStart), Y(powerCurve(lowStart)));
+            c.lineTo(X(cutoff), Y(powerCurve(cutoff)));
+            c.stroke();
+            c.strokeStyle = palette.cutoffFit;
+            c.beginPath();
+            for (let j = 0; j <= 80; j++) {
+              const logSize = Math.log(cutoff) + j / 80 * (Math.log(highEnd) - Math.log(cutoff));
+              const size = Math.exp(logSize);
+              if (j) c.lineTo(X(size), Y(exponentialCurve(size)));
+              else c.moveTo(X(size), Y(exponentialCurve(size)));
+            }
+            c.stroke();
+            c.setLineDash([]);
+            c.strokeStyle = palette.axis;
+            c.lineWidth = d;
+            c.beginPath();
+            c.moveTo(X(cutoff), top);
+            c.lineTo(X(cutoff), height - bottom);
+            c.stroke();
+            c.fillStyle = palette.axis;
+            c.fillText(`s_max ≈ ${cutoff.toFixed(0)}`, Math.min(width - 70 * d, X(cutoff) + 5 * d), top + 10 * d);
+            const exponent = -best.power.slope;
+            ui.fitLabel.textContent = `EFFECTIVE τ=${exponent.toFixed(2)} · R²=${best.power.r2.toFixed(2)}`;
+            tauSum += exponent;
+            fitSamples++;
+            ui.tauMetric.textContent = (tauSum / fitSamples).toFixed(2);
+            ui.cutoffMetric.textContent = cutoff.toFixed(0);
+            ui.tauFitQuality.textContent = `R² ${best.power.r2.toFixed(2)}`;
+            ui.cutoffFitCount.textContent = `SAMPLE ${distributionSamples}`;
+          } else {
+            ui.fitLabel.textContent = 'FIT COLLECTING DATA';
+          }
+        }
+
+        function updateProbability(name, rawValue, reset = false) {
+          const slider = ui[name];
+          const number = ui[`${name}Number`];
+          const parsed = Number.parseFloat(rawValue);
+          const value = Number.isFinite(parsed)
+            ? Math.max(Number(slider.min), Math.min(Number(slider.max), parsed))
+            : Number(slider.value);
+          slider.value = String(value);
+          const actualValue = Number(slider.value);
+          number.value = name === 'p' ? actualValue.toFixed(3) : actualValue.toFixed(5);
+          if (reset) initialize();
+          else drawClusterDistribution();
+        }
+
+        function canAnimate() {
+          return running && inView && !document.hidden;
+        }
+
+        function stopAnimation() {
+          if (frameHandle !== null) {
+            cancelAnimationFrame(frameHandle);
+            frameHandle = null;
+          }
+        }
+
+        function scheduleAnimation() {
+          if (canAnimate() && frameHandle === null) frameHandle = requestAnimationFrame(animate);
+        }
+
+        function animate() {
+          frameHandle = null;
+          if (!canAnimate()) return;
+          for (let i = 0; i < Number(ui.speed.value); i++) step();
+          updateStats();
+          draw();
+          scheduleAnimation();
+        }
+
+        function updatePlaybackButton() {
+          ui.toggleIcon.textContent = running ? 'Ⅱ' : '▶';
+          ui.toggleText.textContent = running ? 'Pause' : 'Run';
+          ui.toggle.setAttribute('aria-label', running ? 'Pause simulation' : 'Run simulation');
+        }
+
+        function redrawCharts() {
+          drawSparkline();
+          drawClusterDistribution();
+        }
+
+        ui.p.addEventListener('input', () => updateProbability('p', ui.p.value));
+        ui.f.addEventListener('input', () => updateProbability('f', ui.f.value));
+        ui.pNumber.addEventListener('change', () => updateProbability('p', ui.pNumber.value, true));
+        ui.fNumber.addEventListener('change', () => updateProbability('f', ui.fNumber.value, true));
+        ui.speed.addEventListener('input', () => { ui.speedValue.textContent = `${ui.speed.value}×`; });
+        ui.size.addEventListener('input', () => { ui.sizeValue.textContent = ui.size.value; });
+        ui.size.addEventListener('change', initialize);
+        ui.reset.addEventListener('click', initialize);
+        ui.preset.addEventListener('click', () => {
+          ui.p.value = '0.01';
+          ui.f.value = '0.001';
+          updateProbability('p', ui.p.value);
+          updateProbability('f', ui.f.value);
+          initialize();
+        });
+        ui.toggle.addEventListener('click', () => {
+          running = !running;
+          updatePlaybackButton();
+          if (running) scheduleAnimation();
+          else stopAnimation();
+        });
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) stopAnimation();
+          else scheduleAnimation();
+        });
+        const handleMotionPreference = event => {
+          if (event.matches && running) {
+            running = false;
+            updatePlaybackButton();
+            stopAnimation();
+          }
+        };
+        if (motionPreference.addEventListener) motionPreference.addEventListener('change', handleMotionPreference);
+        else motionPreference.addListener(handleMotionPreference);
+
+        if ('ResizeObserver' in window) {
+          const resizeObserver = new ResizeObserver(redrawCharts);
+          resizeObserver.observe(ui.spark);
+          resizeObserver.observe(ui.clusterPlot);
+        } else {
+          window.addEventListener('resize', redrawCharts);
+        }
+        if ('IntersectionObserver' in window) {
+          const intersectionObserver = new IntersectionObserver(([entry]) => {
+            inView = entry.isIntersecting;
+            if (inView) scheduleAnimation();
+            else stopAnimation();
+          }, { threshold: 0.05 });
+          intersectionObserver.observe(sim);
+        }
+
+        initialize();
+        updatePlaybackButton();
+        scheduleAnimation();
+      })();
+    </script>
+  </div>
+</SimFrame>
+
+<style>
+  /* Keep per-simulation colors grouped as --sim-<slug>-<role>; other sims can use the same pattern without changing the shared board palette. */
+  .forest-fire-sim {
+    --sim-forest-fire-ink: var(--chalk);
+    --sim-forest-fire-muted: var(--chalk-faint);
+    --sim-forest-fire-panel: rgba(0, 0, 0, 0.16);
+    --sim-forest-fire-panel-highlight: rgba(255, 255, 255, 0.035);
+    --sim-forest-fire-border: var(--board-edge);
+    --sim-forest-fire-tree: #84ad81;
+    --sim-forest-fire-burning: #f17d55;
+    --sim-forest-fire-empty: #2a383b;
+    --sim-forest-fire-observations: #8fd3c4;
+    --sim-forest-fire-power-fit: #f4c95d;
+    --sim-forest-fire-cutoff-fit: #bda7e8;
+    --sim-forest-fire-axis: #9ba9a1;
+    --sim-forest-fire-curve: #f17d55;
+    min-width: 0;
+    width: 100%;
+    color: var(--sim-forest-fire-ink);
+    font-family: var(--font-body);
+  }
+
+  .ff-dashboard {
+    display: grid;
+    grid-template-columns: minmax(13rem, 0.8fr) minmax(0, 1.3fr);
+    gap: 0.9rem;
+    align-items: start;
+    min-width: 0;
+  }
+
+  .ff-panel {
+    min-width: 0;
+    border: 1px solid var(--sim-forest-fire-border);
+    border-radius: 8px;
+    background: linear-gradient(155deg, var(--sim-forest-fire-panel-highlight), var(--sim-forest-fire-panel));
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.14);
+  }
+
+  .ff-control-panel { padding: 0.95rem; }
+  .ff-section-heading {
+    margin: 0;
+    color: var(--sim-forest-fire-muted);
+    font: 400 0.65rem/1.3 var(--font-label);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-shadow: none;
+  }
+  .ff-control-panel > .ff-section-heading {
+    padding-bottom: 0.68rem;
+    border-bottom: 1px solid var(--sim-forest-fire-border);
+  }
+  .ff-control {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .ff-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .ff-control-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 0.88rem;
+  }
+  .ff-control-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.14rem;
+    min-width: 0;
+  }
+  .ff-control-copy strong {
+    color: var(--sim-forest-fire-ink);
+    font: 500 0.73rem/1.25 var(--font-body);
+  }
+  .ff-control-copy em {
+    color: var(--sim-forest-fire-muted);
+    font: italic 0.77rem/1.2 var(--font-serif);
+  }
+  .ff-number-input,
+  .ff-value {
+    min-width: 4.25rem;
+    padding: 0.25rem 0.4rem;
+    border: 1px solid var(--sim-forest-fire-border);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--sim-forest-fire-ink);
+    font: 400 0.68rem/1.35 var(--font-label);
+    text-align: right;
+  }
+  .ff-number-input {
+    width: 5.5rem;
+    min-width: 0;
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+  .ff-number-input::-webkit-outer-spin-button,
+  .ff-number-input::-webkit-inner-spin-button { margin: 0; -webkit-appearance: none; }
+  .ff-range {
+    display: block;
+    width: 100%;
+    height: 4px;
+    margin: 0.9rem 0 0;
+    border-radius: 2px;
+    appearance: none;
+    background: var(--sim-forest-fire-border);
+    cursor: pointer;
+  }
+  .ff-range::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--board);
+    border-radius: 50%;
+    appearance: none;
+    background: var(--sim-forest-fire-tree);
+    box-shadow: 0 0 0 1px var(--sim-forest-fire-tree);
+  }
+  .ff-range::-moz-range-thumb {
+    width: 11px;
+    height: 11px;
+    border: 2px solid var(--board);
+    border-radius: 50%;
+    background: var(--sim-forest-fire-tree);
+    box-shadow: 0 0 0 1px var(--sim-forest-fire-tree);
+  }
+  .ff-range-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.25rem;
+    color: var(--sim-forest-fire-muted);
+    font: 400 0.56rem/1.2 var(--font-label);
+  }
+  .ff-range-labels i { font-style: normal; }
+  .ff-speed-control {
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--sim-forest-fire-border);
+  }
+  .ff-preset-block {
+    margin-top: 0.75rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--sim-forest-fire-border);
+  }
+  .ff-preset-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: var(--sim-forest-fire-muted);
+    font: 400 0.54rem/1.2 var(--font-label);
+    letter-spacing: 0.08em;
+  }
+  .ff-button,
+  .ff-preset-button {
+    border: 1px solid var(--sim-forest-fire-border);
+    border-radius: 5px;
+    font-family: var(--font-label);
+    cursor: pointer;
+  }
+  .ff-preset-button {
+    display: block;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.42rem 0.55rem;
+    background: var(--sim-forest-fire-power-fit);
+    color: var(--board);
+    text-align: left;
+    font-size: 0.64rem;
+    line-height: 1.2;
+  }
+  .ff-preset-button small {
+    display: block;
+    margin-top: 0.15rem;
+    font: 400 0.57rem/1.2 var(--font-label);
+    opacity: 0.78;
+  }
+  .ff-button-row {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 0.45rem;
+    margin: 0.55rem 0 0.85rem;
+  }
+  .ff-button {
+    display: flex;
+    min-width: 0;
+    min-height: 2.4rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.45rem;
+    font-size: 0.62rem;
+    line-height: 1.2;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .ff-primary {
+    border-color: var(--sim-forest-fire-tree);
+    background: var(--sim-forest-fire-tree);
+    color: var(--board);
+    font-weight: 500;
+  }
+  .ff-secondary {
+    background: transparent;
+    color: var(--sim-forest-fire-ink);
+  }
+  .ff-button:hover,
+  .ff-preset-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+  }
+  .ff-secondary:hover { border-color: var(--sim-forest-fire-tree); color: var(--sim-forest-fire-tree); }
+  .ff-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.7rem;
+    color: var(--sim-forest-fire-muted);
+    font: 400 0.55rem/1.25 var(--font-label);
+    text-transform: uppercase;
+  }
+  .ff-legend span { display: inline-flex; align-items: center; gap: 0.28rem; }
+  .ff-swatch {
+    width: 0.58rem;
+    height: 0.58rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+  }
+  .ff-tree-swatch { background: var(--sim-forest-fire-tree); }
+  .ff-burning-swatch { background: var(--sim-forest-fire-burning); }
+  .ff-empty-swatch { background: var(--sim-forest-fire-empty); }
+
+  .ff-lattice-panel { padding: 0.95rem; }
+  .ff-lattice-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .ff-generation {
+    flex: 0 0 auto;
+    color: var(--sim-forest-fire-muted);
+    font: 400 0.58rem/1.25 var(--font-label);
+    letter-spacing: 0.08em;
+  }
+  .ff-generation strong { margin-left: 0.2rem; color: var(--sim-forest-fire-ink); font-weight: 400; }
+  .ff-canvas-wrap {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 1;
+    margin-top: 0.75rem;
+    overflow: hidden;
+    border: 1px solid var(--sim-forest-fire-border);
+    border-radius: 5px;
+    background: var(--sim-forest-fire-empty);
+  }
+  .ff-lattice-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+  }
+
+  .ff-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+  .ff-metric { padding: 0.8rem; }
+  .ff-metric .ff-section-heading { min-height: 1.7em; font-size: 0.58rem; }
+  .ff-metric-symbol {
+    margin: 0.68rem 0 0;
+    color: var(--sim-forest-fire-tree);
+    font: italic 1.3rem/1.1 var(--font-serif);
+  }
+  .ff-metric-symbol sub { font-size: 0.58em; vertical-align: sub; }
+  .ff-metric-value {
+    margin: 0.06rem 0 0.35rem;
+    color: var(--sim-forest-fire-ink);
+    font: 400 clamp(1.35rem, 3.5vw, 2rem)/1.2 var(--font-label);
+    letter-spacing: -0.05em;
+  }
+  .ff-meter {
+    height: 4px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .ff-density-meter {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: var(--sim-forest-fire-tree);
+    transition: width 0.2s ease;
+  }
+  .ff-metric-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.3rem;
+    margin: 0.48rem 0 0;
+    color: var(--sim-forest-fire-muted);
+    font: 400 0.51rem/1.35 var(--font-label);
+  }
+  .ff-metric-foot span:last-child { color: var(--sim-forest-fire-ink); text-align: right; }
+  .ff-spark-wrap {
+    height: 3.1rem;
+    margin-top: 0.1rem;
+    border-bottom: 1px solid var(--sim-forest-fire-border);
+  }
+  .ff-sparkline { display: block; width: 100%; height: 100%; }
+
+  .ff-analysis { padding: 0.95rem; }
+  .ff-analysis-heading,
+  .ff-plot-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
+  .ff-sampling-status,
+  .ff-plot-foot,
+  .ff-analysis-note {
+    color: var(--sim-forest-fire-muted);
+    font: 400 0.56rem/1.45 var(--font-label);
+    letter-spacing: 0.03em;
+  }
+  .ff-sampling-status { text-align: right; }
+  .ff-plot-heading { margin: 0.75rem 0 0.4rem; }
+  .ff-plot-heading strong {
+    color: var(--sim-forest-fire-tree);
+    font: italic 1.15rem/1.2 var(--font-serif);
+    white-space: nowrap;
+  }
+  .ff-plot-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.45rem 0.75rem;
+    color: var(--sim-forest-fire-muted);
+    font: 400 0.54rem/1.2 var(--font-label);
+  }
+  .ff-plot-legend span { display: inline-flex; align-items: center; gap: 0.28rem; white-space: nowrap; }
+  .ff-plot-legend i { display: inline-block; width: 0.8rem; height: 2px; }
+  .ff-legend-observations { background: var(--sim-forest-fire-observations); }
+  .ff-legend-power { background: var(--sim-forest-fire-power-fit); }
+  .ff-legend-cutoff { background: var(--sim-forest-fire-cutoff-fit); }
+  .ff-plot-wrap {
+    width: 100%;
+    height: clamp(9rem, 22vw, 12rem);
+    overflow: hidden;
+    border: 1px solid var(--sim-forest-fire-border);
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.12);
+  }
+  .ff-cluster-plot { display: block; width: 100%; height: 100%; }
+  .ff-plot-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin: 0.45rem 0 0;
+    padding-top: 0.45rem;
+    border-top: 1px solid var(--sim-forest-fire-border);
+  }
+  .ff-fit-label { text-align: right; }
+  .ff-analysis-note { margin: 0.45rem 0 0; font-family: var(--font-body); font-size: 0.77rem; letter-spacing: 0; }
+  .ff-number-input:focus-visible,
+  .ff-range:focus-visible,
+  .ff-button:focus-visible,
+  .ff-preset-button:focus-visible {
+    outline: 2px solid var(--sim-forest-fire-power-fit);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 680px) {
+    .ff-dashboard { grid-template-columns: minmax(12rem, 0.85fr) minmax(0, 1.15fr); gap: 0.65rem; }
+    .ff-control-panel, .ff-lattice-panel, .ff-analysis { padding: 0.8rem; }
+    .ff-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ff-metric { padding: 0.75rem; }
+  }
+
+  @media (max-width: 560px) {
+    .ff-dashboard { grid-template-columns: minmax(0, 1fr); }
+    .ff-lattice-panel { order: -1; }
+    .ff-metrics { gap: 0.5rem; }
+    .ff-analysis-heading { align-items: flex-start; flex-direction: column; gap: 0.35rem; }
+    .ff-sampling-status { text-align: left; }
+    .ff-plot-heading { align-items: flex-start; flex-direction: column; gap: 0.35rem; }
+    .ff-plot-legend { justify-content: flex-start; gap: 0.35rem 0.6rem; }
+    .ff-plot-wrap { height: 10rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ff-button,
+    .ff-preset-button,
+    .ff-density-meter { transition: none; }
+  }
+</style>

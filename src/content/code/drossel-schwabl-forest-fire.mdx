@@ -1,0 +1,20 @@
+---
+title: "The Drossel–Schwabl forest-fire model"
+description: "An interactive lattice simulation of growth, lightning, and spreading fires."
+date: 2026-09-23
+stack: ["JavaScript", "Canvas"]
+tags: ["statistical-mechanics", "forest-fires", "self-organized-criticality"]
+---
+import ForestFireSim from '../../components/sims/ForestFireSim.astro';
+
+<ForestFireSim />
+
+## The model
+
+Each site of a periodic square lattice is **empty**, a **tree**, or **burning**. An empty site grows a tree with probability $p$ each step; a tree catches fire if a neighboring site burns or lightning strikes it with probability $f$; and a burning tree becomes empty on the next step. The simulation starts with half the sites occupied by trees. Adjust $p$, $f$, or the lattice size to see how forests grow and fires spread.
+
+## Why criticality is in question
+
+In 1992, [Drossel and Schwabl](https://doi.org/10.1103/PhysRevLett.69.1629) proposed this model as an example of *self-organized criticality*: as burning, growth, and ignition become widely separated in time ($f/p\to0$) while the lattice grows, the forest would organize into clusters on all scales without tuning its density to a critical value. They proposed a distribution $N(s)\sim s^{-\tau}$ up to a cutoff $s_{\max}$, with rapid decay beyond it. Here $\tau$ describes the apparent power-law exponent; their scaling argument predicted $s_{\max}\sim\theta\ln\theta$, where $\theta=p/f$. That prediction is part of the original hypothesis, not an established two-dimensional asymptotic law.
+
+In **two dimensions**, later simulations by [Grassberger (2002)](https://doi.org/10.1088/1367-2630/4/1/317) and [Pruessner and Jensen (2002)](https://doi.org/10.1103/PhysRevE.65.056707) found drifting exponents and broken simple scaling. Dense patches can produce large fires while sparse patches produce small ones: together they can look like a power law over a limited range without being scale-free. This is evidence against the original simple-scaling picture, **not a proof that all asymptotic critical behavior is absent**. The fitted $\tau$ and $s_{\max}$ here are exploratory; a finite lattice with correlated snapshots cannot settle the limiting question.
