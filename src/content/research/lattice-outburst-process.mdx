@@ -1,0 +1,125 @@
+---
+title: "Growth by outbursts: from clusters to lattice animals"
+description: "A growing region, rare large bursts, and a geometric route to polynomial bounds on its moments."
+date: 2026-09-23
+status: "in progress"
+tags: ["probability", "random-growth", "lattice-animals"]
+---
+
+import OutburstDemo from '../../components/OutburstDemo.astro';
+
+Start with a single infected site. Every infected site can trigger an outburst, infecting a whole neighbourhood at once. Most outbursts are small; occasionally, a large one pushes the boundary far ahead. As the region grows, it gains more places from which the next outburst can start.
+
+There is a competition here. More infected sites mean more clocks, which could accelerate growth. But most clocks ring deep inside the region, where another small outburst changes nothing. How much does this geometric overlap slow the process down? And can rare, very large outbursts dominate its expected size?
+
+We came to this model while studying [cluster–cluster aggregation](/research/cluster-cluster-aggregation/). It gives a way to bound a complicated cluster by a simpler growing set. The model also has a history of its own, beginning with Maria Deijfen's continuum growth process.
+
+## The lattice model
+
+Let $G_t$ be the infected set in $\mathbb Z^d$, starting from $G_0=\{0\}$. At every infected site $x$, and for every integer radius $R\geq1$, an independent clock rings at rate $R^{-\alpha}$. When it rings, we add the entire $\ell^1$ ball:
+
+$$
+G_t=G_{t^-}\cup B_1(x,R),
+\qquad
+B_1(x,R)=\{y\in\mathbb Z^d:\|y-x\|_1\leq R\}.
+$$
+
+In two dimensions these balls are diamonds. Infection is permanent, and a clock still rings when its whole diamond is already infected. Increasing $\alpha$ makes large outbursts rarer.
+
+For $\alpha>1$, the rates at a single site sum to a finite number. Equivalently, write $\lambda_\alpha=\sum_{R\geq1}R^{-\alpha}$. When the infected set is finite, the next event arrives at rate $\lambda_\alpha|G_t|$: choose its centre uniformly from all infected sites, then choose its radius with probability $R^{-\alpha}/\lambda_\alpha$. Thus $R^{-\alpha}$ is a **rate**, rather than an already normalized probability distribution.
+
+<OutburstDemo />
+
+Try stepping through a few events before pressing Run. The highlighted centre can lie anywhere in the infected region. An outburst near the boundary may add many sites; one in the interior may add none. The display uses a finite radius cutoff so it can run in a browser. It illustrates the mechanism; the result below concerns the process with all integer radii.
+
+## A continuum predecessor
+
+In [Deijfen's continuum model](https://arxiv.org/abs/1509.06946), the infected region is a subset of $\mathbb R^d$. Outbursts arrive at a rate equal to its volume, are centred uniformly within it, and add Euclidean balls whose radii have a prescribed distribution. Starting from a bounded region of positive volume, Deijfen proved a shape theorem for bounded radius distributions: after rescaling space by time, the infected region approaches a deterministic ball.
+
+The striking conclusion is that a system with more and more active centres still grows at a finite linear speed. Its volume is consequently of order $t^d$ at large times.
+
+[Gouéré and Marchand](https://arxiv.org/abs/0707.1395) extended this picture to certain unbounded radius distributions. Their sufficient condition allows rare large outbursts; in particular, it holds when the radius has a finite moment of order $d+1+s$ for some $s>0$. Their argument connects growth to a geometric optimization problem: how much unusually favourable material can a path collect?
+
+Our question asks for another kind of control. A shape theorem describes a typical realization at sufficiently large times. A bound on $\mathbb E[|G_t|^k]$ must also account for the unusual realizations that grow much faster. Higher moments give those rare realizations more weight.
+
+## Why rooted clusters lead to outbursts
+
+In cluster–cluster aggregation, clusters move and merge. To follow growth in one direction, give each initial particle a root label. At a collision, retain the passive cluster's root and delete the moving source's root.
+
+Now follow one root while it survives. Whenever its cluster receives a merger, it stays in place and absorbs the incoming cluster. The cluster can also translate between mergers, but in coordinates centred at the root, a translation leaves its shape unchanged. If it becomes the source of a merger, we stop following that root. This produces a set that grows through incoming attachments until it is stopped.
+
+Suppose a source containing $R$ vertices attaches at a site $x$ of the tracked cluster. Connectivity forces the whole source to lie within $B_1(x,R)$. Moreover, the total rate of size-$R$ attachments at a fixed site is at most $R^{-\alpha}$: there are at most $2d$ possible contact bonds, each contributing at most $R^{-\alpha}/(2d)$.
+
+So we can let an outburst clock ring whenever such an attachment occurs, and fill in the entire diamond instead of just the source. Additional outbursts are allowed. The outburst process contains the tracked cluster throughout its life. A mass-transport argument then transfers this forward-root comparison to roots observed at a fixed time. This is the bridge back to cluster-size moments.
+
+## Polynomial growth of moments
+
+**Our result.** For $d\geq1$ and $k>0$, if
+
+$$
+\alpha>d(k+1)+2,
+$$
+
+then the lattice outburst process is nonexplosive and
+
+$$
+\boxed{\mathbb E[|G_t|^k]\leq C_{\alpha,d,k}(1+t)^{dk},\qquad t\geq0.}
+$$
+
+Nonexplosion means that infinitely many outbursts cannot accumulate in finite time. The moment bound has the power suggested by a region whose radius grows linearly: radius $t$, volume $t^d$, and $k$th power $t^{dk}$. It does not identify an asymptotic shape or a limiting growth constant.
+
+For example, in two dimensions, $\alpha>6$ gives $\mathbb E[|G_t|]\leq C(1+t)^2$. To control the second moment by $C(1+t)^4$, our argument requires $\alpha>8$. These are sufficient conditions from the proof, not proposed sharp thresholds.
+
+This result is part of our current research notes. **A formal writeup is coming soon.** The idea of the proof is worth explaining now, because it turns a question about growth in time into a question about connected sets in a random landscape.
+
+## Fast outbursts leave a trail
+
+Trace the infection of a distant site backwards: which outburst infected it, which outburst infected that centre, and so on, back to the origin? This gives an infection history whose waiting times add up to at most $t$.
+
+Following Gouéré and Marchand, call a radius-$R$ outburst **fast** if its first clock rings within $\varepsilon R$ of its centre becoming infected. If it is not fast, its radius is at most its waiting time divided by $\varepsilon$. Summing along the history, all the non-fast outbursts together can account for at most $t/\varepsilon$ of travel.
+
+Any additional distance must therefore come from fast outbursts. At each site collect their radii into a random weight,
+
+$$
+W_x=\sum_{R\geq1}R\,\mathbf 1_{\{\tau_{x,R}\leq\varepsilon R\}},
+\qquad \tau_{x,R}\sim\operatorname{Exp}(R^{-\alpha}).
+$$
+
+These weights are independent across sites. A small $\varepsilon$ makes fast outbursts rare. The difficulty is that the growing process can find unusually rich routes through this landscape; bounding the weight at one typical site is not enough.
+
+## How much can a lattice animal collect?
+
+A **lattice animal** is simply a finite connected set of lattice sites. Give each site the weight $W_x$, and let $\mathcal A_n$ be the largest total weight of any $n$-site animal containing the origin. This is the greedy lattice animal problem studied by [Cox, Gandolfi, Griffin and Kesten](https://doi.org/10.1214/aoap/1177005277), with further convergence results due to [Gandolfi and Kesten](https://doi.org/10.1214/aoap/1177005201).
+
+Joining successive infection centres by shortest nearest-neighbour paths produces such a connected set. If the resulting walk has length $L$, it visits at most $L+1$ sites, and the infection-history bound becomes
+
+$$
+L\leq \frac{t}{\varepsilon}+\mathcal A_{L+1}.
+$$
+
+The useful estimate says that, beyond a random size $N$, **every animal containing the origin** has average weight at most $1/2$. We also need $\mathbb E[N^{dk}]<\infty$. This second requirement is what lets us pass from a statement about eventual growth to a bound on moments.
+
+To obtain it, we adapt the upper-bound argument of Cox and coauthors. Separate weights into dyadic levels: roughly $1,2,4,8,\ldots$. Very large weights are handled by a union bound over the $O(n^d)$ sites an $n$-site animal can reach. For the smaller levels, give each level a budget for how many heavy sites an animal may collect. The budgets are chosen so that their total contribution is at most a small multiple of $n$.
+
+Why are budgets rarely exceeded? An animal with $n$ vertices has a spanning tree that can be traversed in at most $2(n-1)$ steps. This limits how many different lists of heavy sites it can visit. Counting those lists, then using independence of the weights, gives an exponential bound on collecting too many marked sites. Combining all levels gives a polynomial tail for $N$ with exponent strictly larger than $dk$.
+
+Finally, when $L+1\geq N$, we can absorb half the length into the left-hand side:
+
+$$
+L\leq\frac{t}{\varepsilon}+\frac{L+1}{2}
+\quad\Longrightarrow\quad
+L\leq\frac{2t}{\varepsilon}+1.
+$$
+
+Shorter histories are controlled by $N$. Thus the entire infected region lies inside a ball with radius bounded by a constant times $t+N+1$. Taking its volume, then its $k$th moment, gives the polynomial bound. The same spatial confinement rules out explosion.
+
+The connection that brought us here is useful in both directions: aggregation supplies the question, while the outburst process isolates the geometry that makes a polynomial bound possible.
+
+## References
+
+1. M. Deijfen. [*Asymptotic shape in a continuum growth model*](https://arxiv.org/abs/1509.06946). *Advances in Applied Probability* **35**(2), 303–318 (2003).
+2. J.-B. Gouéré and R. Marchand. [*Continuous first-passage percolation and continuous greedy paths model: linear growth*](https://arxiv.org/abs/0707.1395). *Annals of Applied Probability* **18**(6), 2300–2319 (2008).
+3. J. T. Cox, A. Gandolfi, P. S. Griffin and H. Kesten. [*Greedy lattice animals. I. Upper bounds*](https://doi.org/10.1214/aoap/1177005277). *Annals of Applied Probability* **3**(4), 1151–1169 (1993).
+4. A. Gandolfi and H. Kesten. [*Greedy lattice animals. II. Linear growth*](https://doi.org/10.1214/aoap/1177005201). *Annals of Applied Probability* **4**(1), 76–107 (1994).
+
+The lattice moment estimate stated as our result above refers to the forthcoming writeup; the cited papers provide the continuum model and the greedy lattice animal framework.

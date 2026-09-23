@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Lattice outbursts — interactive illustration</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="outburst" aria-label="Lattice outburst simulation">
+    <header>
+      <div class="heading">
+        <p class="eyebrow">A growing set in ℤ²</p>
+        <h1>One site. Then an outburst.</h1>
+      </div>
+      <dl class="readouts" aria-label="Simulation measurements">
+        <div><dt>Infected sites</dt><dd id="site-count">1</dd></div>
+        <div><dt>Model time</dt><dd id="model-time">0.000</dd></div>
+      </dl>
+    </header>
+    <p class="intro">An infected site rings, a radius is drawn, and every site in its diamond becomes infected.</p>
+    <div class="canvas-wrap">
+      <canvas id="lattice" role="img" aria-label="Lattice with one infected site at the origin." aria-describedby="event-description"></canvas>
+      <span class="view-note" aria-hidden="true">View fits the growing cluster</span>
+    </div>
+    <div class="legend" aria-label="Color legend">
+      <span><i class="infected"></i>Infected</span>
+      <span><i class="new"></i>New this outburst</span>
+      <span><i class="center"></i>Outburst center</span>
+    </div>
+    <p id="event-description" class="event-description">Start at the origin. Press Run, or advance one outburst with Step.</p>
+    <div class="controls">
+      <div class="buttons">
+        <button id="run" type="button" class="primary" aria-pressed="false">Run</button>
+        <button id="step" type="button">Step</button>
+        <button id="reset" type="button">Reset</button>
+      </div>
+      <label class="alpha-label" for="alpha">Decay α
+        <select id="alpha">
+          <option value="3" selected>3 · more long jumps</option>
+          <option value="5">5 · mostly local</option>
+          <option value="7">7 · strongly local</option>
+        </select>
+      </label>
+    </div>
+    <p class="explanation">Small radii are frequent; large radii are rare. Raising α makes distant outbursts rarer. Changing α starts a new sample.</p>
+    <p class="caption">Illustration with radii 1–24 and rate R<sup>−α</sup> per infected site. Outbursts play at a steady viewing pace; the clock shows the sampled model time. Interior outbursts can add no sites. This view illustrates the rule, not the moment bound.</p>
+    <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
