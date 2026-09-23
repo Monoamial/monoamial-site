@@ -8,7 +8,6 @@ tags:
   - mathematical-physics
   - Ising-model
   - Lee-Yang-zeros
-link: "https://arxiv.org/abs/2609.25348"
 ---
 
 Imagine a small magnet at every point of a square lattice, each pointing up or down. Neighbouring magnets prefer to agree, while temperature introduces disorder. This is the **Ising model**: a simple system in which local interactions produce a collective phase transition.
@@ -22,7 +21,7 @@ $$
 
 Here $\beta$ is inverse temperature, $h$ is an external magnetic field, and the first sum runs over nearest neighbours. We set the interaction strength to one. The **partition function** $Z_{\beta,\Lambda}(h)$ is the sum of these weights over all configurations; dividing by it turns weights into probabilities. We use free boundaries: only edges with both endpoints in $\Lambda$ contribute.
 
-At zero field and high temperature, $\beta<\beta_c$, there is no preferred direction, and distant spins become almost independent. At low temperature, $\beta>\beta_c$, the infinite system has two ordered phases, with positive or negative spontaneous magnetization. At $\beta_c=\tfrac12\log(1+\sqrt2)$, correlations reach across all scales. Our question concerns approaching this transition from the high-temperature side. [Onsager, 1944](https://doi.org/10.1103/PhysRev.65.117).
+At zero field and high temperature, $\beta<\beta_c$, there is no preferred direction, and distant spins become almost independent. At low temperature, $\beta>\beta_c$, the infinite system has two ordered phases, with positive or negative spontaneous magnetization. At $\beta_c=\tfrac12\log(1+\sqrt2)$, correlations reach across all scales. Our question concerns approaching this transition from the high-temperature side.
 
 ## Two ways to measure distance from criticality
 
@@ -42,7 +41,7 @@ $$
 
 The correlation length $\xi_\beta$ measures how far a spin's influence extends. As criticality approaches, $\xi_\beta$ diverges and $m_\beta$ vanishes.
 
-The second gap comes from allowing $h$ to be complex. For real $h$, every statistical weight is positive, so $Z$ cannot vanish. For complex $h$, the weights can cancel. The **Lee–Yang theorem** places all these zeros on the imaginary field axis—or on the unit circle in the variable $z=e^{-2\beta h}$. [Lee–Yang, 1952](https://doi.org/10.1103/PhysRev.87.410).
+The second gap comes from allowing $h$ to be complex. For real $h$, every statistical weight is positive, so $Z$ cannot vanish. For complex $h$, the weights can cancel. The **Lee–Yang theorem** places all these zeros on the imaginary field axis—or on the unit circle in the variable $z=e^{-2\beta h}$.
 
 For the free square boxes $\Lambda_L=[-L,L]^2\cap\mathbb Z^2$, define
 
@@ -63,9 +62,9 @@ e^{-c\delta|x-y|},
 \quad 0<\delta\leq1.
 $$
 
-One intuition behind the proof is to reweight space exponentially: locality makes a small reweighting a small perturbation, and the spectral distance keeps the inverse under control. [Combes–Thomas, 1973](https://doi.org/10.1007/BF01646473); [Aizenman–Warzel, 2015, §10.3](https://doi.org/10.1090/gsm/168).
+One intuition behind the proof is to reweight space exponentially: locality makes a small reweighting a small perturbation, and the spectral distance keeps the inverse under control. [Combes–Thomas, 1973](https://doi.org/10.1007/BF01646473).
 
-We wanted an Ising analogue: could distance from the Lee–Yang zeros control the decay rate of spin correlations? Earlier work already linked suitable uniform zero-free regions to exponential decay. Our aim was a quantitative comparison of the two gaps. [Penrose–Lebowitz, 1974](https://doi.org/10.1007/BF01614239).
+We wanted an Ising analogue: could distance from the Lee–Yang zeros control the decay rate of spin correlations? Penrose and Lebowitz had already linked suitable uniform zero-free regions to exponential decay. Our aim was a quantitative comparison of the two gaps.
 
 This was the subject of my [Bachelor's thesis at Princeton University](https://dataspace.princeton.edu/handle/88435/dsp01dv13zx56v), supervised by Jacob Shapiro in 2024. We posed the problem there without finding a satisfactory solution. Jacob and Jui-Hui Chung continued working on it and found a working approach in summer 2026.
 
@@ -83,7 +82,7 @@ $$
 
 So the gaps determine one another's scale near criticality. Whether their appropriately rescaled ratio converges to a single constant remains open.
 
-The exponent has an intuitive origin. At criticality, spin correlations decay like distance to the power $-1/4$. In a square of side $R$, summing correlations over pairs gives magnetization variance of order $R^{15/4}$, hence typical fluctuations of order $R^{15/8}$. A field becomes significant when $\beta h$ times those fluctuations is of order one. Taking $R$ to be the correlation length predicts $\mathcal L_\beta\asymp\xi_\beta^{-15/8}=m_\beta^{15/8}$. This is a scaling heuristic; the theorem makes the comparison rigorous. [Wu, 1966](https://doi.org/10.1103/PhysRev.149.380); [our paper, §1](https://arxiv.org/abs/2609.25348).
+The exponent has an intuitive origin. At criticality, spin correlations decay like distance to the power $-1/4$. In a square of side $R$, summing correlations over pairs gives magnetization variance of order $R^{15/4}$, hence typical fluctuations of order $R^{15/8}$. A field becomes significant when $\beta h$ times those fluctuations is of order one. Taking $R$ to be the correlation length predicts $\mathcal L_\beta\asymp\xi_\beta^{-15/8}=m_\beta^{15/8}$. This is a scaling heuristic; the theorem makes the comparison rigorous.
 
 ## A shorter route, and why the proof changed
 
@@ -98,22 +97,27 @@ $$
 
 Here $J_e$ is the coefficient of $\sigma_x\sigma_y$ in the Gibbs exponent. [Camia–Jiang–Newman, 2023, Theorem 1](https://arxiv.org/abs/2207.12247).
 
-With this input, differentiating in a coupling bounds a connected correlation by products of lower-order ones. Iterating gives a sum over trees whose edges carry square roots of two-point correlations. Their spatial decay then controls all Taylor coefficients of $\log Z$, producing a zero-free disk of the desired size. This shorter argument is recorded conditionally in [Appendix A of our paper](https://arxiv.org/abs/2609.25348).
+With this input, differentiating in a coupling bounds a connected correlation by products of lower-order ones. Iterating gives a sum over trees whose edges carry square roots of two-point correlations. Their spatial decay then controls all Taylor coefficients of $\log Z$, producing a zero-free disk of the desired size. This shorter argument is recorded conditionally in Appendix A of our paper.
 
 But we found a flaw in the published proof of the monotonicity theorem: a stronger auxiliary sign assertion used in its induction fails. This invalidated that proof step, without disproving the monotonicity statement itself. We therefore needed a route that established our comparison independently of it. Appendix A explains the obstruction precisely.
 
 ## Bootstrapping from finite boxes
 
-The replacement proof starts with boxes a sufficiently large multiple of the correlation length. Random-current estimates control magnetization fluctuations inside each box. A correlation inequality of Ding–Song–Sun, together with planar crossing estimates, controls how strongly the surrounding spins can affect it. [Ding–Song–Sun, 2023](https://arxiv.org/abs/2107.09243).
+The replacement proof starts with boxes a sufficiently large multiple of the correlation length. Random-current estimates control magnetization fluctuations inside each box. A correlation inequality of Ding–Song–Sun, together with planar crossing estimates, controls how strongly the surrounding spins can affect it.
 
-We then organize the interactions into connected groups of boxes. Weak boundary influence makes large groups rare; a sufficiently small complex field makes each group's contribution small. A finite-volume induction keeps each successive partition-function ratio close to 1 and bounded away from 0. Adding another box therefore cannot create a zero. This bootstraps control on the correlation-length scale to arbitrarily large free squares. [Our paper, §§4–5](https://arxiv.org/abs/2609.25348).
+We then organize the interactions into connected groups of boxes. Weak boundary influence makes large groups rare; a sufficiently small complex field makes each group's contribution small. A finite-volume induction keeps each successive partition-function ratio close to 1 and bounded away from 0. Adding another box therefore cannot create a zero. This bootstraps control on the correlation-length scale to arbitrarily large free squares.
 
-The resulting zero-free radius is at least a constant times $m_\beta^{15/8}$. The reverse bound comes from expressing the partition function through its Lee–Yang zeros and comparing the susceptibility—the sum of two-point correlations—with the critical magnetization. Together these give the theorem. [Our paper, §3](https://arxiv.org/abs/2609.25348).
+The resulting zero-free radius is at least a constant times $m_\beta^{15/8}$. The reverse bound comes from expressing the partition function through its Lee–Yang zeros and comparing the susceptibility—the sum of two-point correlations—with the critical magnetization. Together these give the theorem.
 
 We have recently also repaired the proof of Theorem 1 in CJN. I will leave the argument for a future update; work on this subject is ongoing.
 
-I am particularly interested in the **random-field Ising model**, where each site feels its own random magnetic field. For a fixed realization, zeros in an additional uniform complex field need no longer lie on the imaginary axis. Understanding their geometry, and how their distance from the origin relates to correlation decay in the presence of disorder, is a direction I would like to pursue. [Our paper, §1](https://arxiv.org/abs/2609.25348).
+I am particularly interested in the **random-field Ising model**, where each site feels its own random magnetic field. For a fixed realization, zeros in an additional uniform complex field need no longer lie on the imaginary axis. Understanding their geometry, and how their distance from the origin relates to correlation decay in the presence of disorder, is a direction I would like to pursue.
 
----
+## References
 
-**Paper:** Noam Borgnia, Jui-Hui Chung, and Jacob Shapiro, *Comparing the Lee–Yang gap with the mass gap in the sub-critical planar Ising model* (2026), [arXiv:2609.25348](https://arxiv.org/abs/2609.25348).
+- L. Onsager (1944), [*Crystal Statistics. I*](https://doi.org/10.1103/PhysRev.65.117) — the two-dimensional Ising critical point.
+- T. D. Lee and C. N. Yang (1952), [*Statistical Theory of Equations of State and Phase Transitions. II*](https://doi.org/10.1103/PhysRev.87.410) — the Ising circle theorem.
+- M. Aizenman and S. Warzel (2015), [*Random Operators*, §10.3](https://doi.org/10.1090/gsm/168) — a lattice Combes–Thomas estimate.
+- O. Penrose and J. L. Lebowitz (1974), [*On the exponential decay of correlation functions*](https://doi.org/10.1007/BF01614239) — zero-free regions and correlation decay.
+- T. T. Wu (1966), [*Theory of Toeplitz Determinants and the Spin Correlations of the Two-Dimensional Ising Model. I*](https://doi.org/10.1103/PhysRev.149.380) — the critical correlation exponent.
+- J. Ding, J. Song and R. Sun (2023), [*A New Correlation Inequality for Ising Models with External Fields*](https://arxiv.org/abs/2107.09243) — a comparison used in the finite-box proof.
