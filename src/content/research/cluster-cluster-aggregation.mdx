@@ -87,21 +87,13 @@ The table collects our current bounds for $k\ge1$ and $\alpha>0$. Set $T=1+t$; c
 | Initial occupancy | Dimension | Slowdown range | Lower bound for $M_k(t)$ | Upper bound for $M_k(t)$ |
 | --- | --- | --- | --- | --- |
 | Full ($p=1$) | $d\ge2$ | All $\alpha>0$ | $T^{k/\alpha}$ | $T^{dk/\alpha+\varepsilon}$, every $\varepsilon>0$ |
-| Vacancies ($0<p<1$) | $d\ge2$ | $\alpha>\beta_d$ | $T^{k/(\alpha+2/d)}$ | $T^{\Gamma(d,\alpha)dk}$ |
-| Vacancies | $d=2,3$ | $0<\alpha\le\beta_d$ | $T^{k/(\alpha+2/d)}$ | Polynomial bound open |
-| Vacancies | $d\ge4$ | $\alpha_c(d)\le\alpha\le\beta_d$ | $T^{k/(\alpha+2/d)}$ | Polynomial bound open |
-| Vacancies | $d\ge4$ | $0<\alpha<\alpha_c(d)$ | $T^{k/\theta(d,\alpha)}$ | Polynomial bound open |
+| Vacancies ($0<p<1$) | $d\ge2$ | $\alpha>\beta_d$ | $T^{k/(\alpha+2/d)}$ | Polynomial in $T$ |
 
 </div>
 
-Here $\beta_2=3-2\sqrt2\approx0.172$, $\beta_d=1-1/(d-1)$ for $d\ge3$ (so $\beta_3=1/2$), and $\alpha_c(d)=1-1/d-2/d^2$. The polynomial upper exponent $\Gamma(d,\alpha)$ is finite and independent of $k$ and $p$, but not sharp. In the last row,
+Here $\beta_2=3-2\sqrt2\approx0.172$, and $\beta_d=1-1/(d-1)$ for $d\ge3$. The vacancy upper bound is polynomial, but its exponent is not sharp.
 
-$$
-\theta(d,\alpha)=\frac{\alpha+1+1/d}
-{1+\max\{1/(\alpha+1),\;1/(1+2/d)\}}.
-$$
-
-“Open” refers to a polynomial upper bound in the current notes. The vacancy lower bounds for $k\ge1$ follow from the first-moment estimates by Jensen’s inequality; the full-occupancy bounds hold for every $k>0$.
+With vacancies, the expected lower growth rate is proved in dimensions two and three. Extending it to every slowdown parameter in dimensions four and higher remains open, although weaker lower bounds are available.
 
 ## The geometry left behind
 

@@ -281,7 +281,7 @@ class SimulationView {
       const [x, y] = this.snapshot.positions[id];
       const owner = this.snapshot.owners[id];
       ctx.fillStyle = clusterColour(owner);
-      ctx.globalAlpha = this.geometry ? (this.xrayAll || owner === selectedOwner ? .035 : inspecting ? .07 : .13) : .94;
+      ctx.globalAlpha = this.geometry ? (this.xrayAll || owner === selectedOwner ? .035 : inspecting ? .07 : .82) : .94;
       ctx.fillRect(pad + x * scale + gap / 2, pad + y * scale + gap / 2, scale - gap, scale - gap);
     }
     ctx.globalAlpha = 1;
