@@ -6,17 +6,12 @@ import { getCollection } from 'astro:content';
 const entries = (await getCollection('research', (e) => !e.data.draft))
   .sort((a, b) => +b.data.date - +a.data.date);
 ---
-<Base title="Research" description="Research in geometric probability theory, dynamical systems, statistical physics, and quantum information.">
+<Base title="Research" description="Probability and mathematical statistical mechanics.">
   <header class="page-head">
     <h1>Research</h1>
-    <p class="sub">
-      Geometric probability on the path space of dynamical systems &mdash; how
-      invariant measures, large deviations, and entropy organize the long-time
-      behavior of physical systems.
-    </p>
   </header>
   <div class="list">
-    {entries.length === 0 && <p class="empty">Notes and preprints will appear here.</p>}
+    {entries.length === 0 && <p class="empty">No entries yet.</p>}
     {entries.map((e) => (
       <EntryCard
         href={`/research/${e.id}/`}
@@ -32,7 +27,6 @@ const entries = (await getCollection('research', (e) => !e.data.draft))
 <style>
   .page-head { margin: 1.5rem 0 2rem; }
   .page-head h1 { color: var(--accent); }
-  .sub { color: var(--chalk-dim); max-width: 60ch; font-size: 1.1rem; }
   .list { display: grid; gap: 1.1rem; }
   .empty { color: var(--chalk-faint); font-style: italic; }
 </style>

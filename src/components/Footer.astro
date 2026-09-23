@@ -1,7 +1,6 @@
 ---
 const year = new Date().getFullYear();
 const links = [
-  { href: 'mailto:your-email@monoamial.com', label: 'Email' },
   { href: 'https://github.com/Monoamial', label: 'GitHub' },
   // TODO: add Scholar / arXiv links once those profiles exist
 ];
@@ -12,7 +11,6 @@ const links = [
     <nav class="foot-links">
       {links.map((l) => <a href={l.href}>{l.label}</a>)}
     </nav>
-    <p class="builtwith">Chalk on slate. Built with Astro + KaTeX.</p>
   </div>
 </footer>
 <style>
@@ -25,5 +23,4 @@ const links = [
   .sig { font-family: var(--font-display); font-weight: 600; font-size: 1.35rem; color: var(--chalk); margin: 0; }
   .foot-links { display: flex; gap: 1.4rem; justify-content: center; margin: 0.8rem 0; flex-wrap: wrap; }
   .foot-links a { font-family: var(--font-label); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.13em; }
-  .builtwith { font-size: 0.8rem; color: var(--chalk-faint); margin: 0; }
 </style>

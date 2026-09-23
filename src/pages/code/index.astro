@@ -9,13 +9,9 @@ const entries = (await getCollection('code', (e) => !e.data.draft))
 <Base title="Code & Simulation" description="Numerical experiments, Monte Carlo simulations, and scientific visualization.">
   <header class="page-head">
     <h1>Code &amp; Simulation</h1>
-    <p class="sub">
-      The lab notebook: Monte Carlo experiments, integrators, and visualizations
-      that turn a conjecture into a picture you can argue with.
-    </p>
   </header>
   <div class="list">
-    {entries.length === 0 && <p class="empty">Projects and demos will appear here.</p>}
+    {entries.length === 0 && <p class="empty">No entries yet.</p>}
     {entries.map((e) => (
       <EntryCard
         href={`/code/${e.id}/`}
@@ -31,7 +27,6 @@ const entries = (await getCollection('code', (e) => !e.data.draft))
 <style>
   .page-head { margin: 1.5rem 0 2rem; }
   .page-head h1 { color: var(--accent-2); }
-  .sub { color: var(--chalk-dim); max-width: 60ch; font-size: 1.1rem; }
   .list { display: grid; gap: 1.1rem; }
   .empty { color: var(--chalk-faint); font-style: italic; }
 </style>

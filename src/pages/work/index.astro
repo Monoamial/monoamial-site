@@ -27,7 +27,6 @@ const sectionColors = {
 <Base title="All work" description="Everything in one place — research, code, writing, and teaching, filterable by tag.">
   <header class="page-head">
     <h1>All work</h1>
-    <p class="sub">Every entry on the board, in one place. Filter by tag or type.</p>
   </header>
 
   <div class="filters" id="filters">
@@ -64,12 +63,11 @@ const sectionColors = {
       </a>
     ))}
   </div>
-  <p class="empty-msg" id="empty-msg" hidden>Nothing matches that filter yet.</p>
+  <p class="empty-msg" id="empty-msg" hidden={all.length > 0}>No entries yet.</p>
 </Base>
 
 <style>
   .page-head { margin: 1.5rem 0 1.5rem; }
-  .sub { color: var(--chalk-dim); max-width: 60ch; font-size: 1.1rem; }
   .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.9rem; }
   .filters.tags { margin-bottom: 1.8rem; }
   .chip {

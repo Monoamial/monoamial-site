@@ -1,35 +1,30 @@
 ---
 import Base from '../layouts/Base.astro';
 import PhaseField from '../components/PhaseField.astro';
-import Math from '../components/Math.astro';
 
 const pillars = [
   {
     href: '/research/',
     kicker: '01',
     title: 'Research',
-    blurb: 'Geometric probability theory applied to dynamical systems in statistical physics and quantum information.',
     accent: 'var(--accent)',
   },
   {
     href: '/code/',
     kicker: '02',
     title: 'Code & Simulation',
-    blurb: 'Numerical experiments, Monte Carlo, and visualizations \u2014 the lab notebook where theory meets the machine.',
     accent: 'var(--accent-2)',
   },
   {
     href: '/writing/',
     kicker: '03',
     title: 'Writing',
-    blurb: 'Expository notes, essays, and half-formed ideas chalked out in the margins.',
     accent: 'var(--accent-3)',
   },
   {
     href: '/teaching/',
     kicker: '04',
     title: 'Teaching',
-    blurb: 'Courses, problem sets, and materials built to make hard things feel inevitable.',
     accent: 'var(--accent-4)',
   },
 ];
@@ -42,12 +37,8 @@ const pillars = [
         <p class="eyebrow">Master&rsquo;s student · Mathematical Physics</p>
         <h1>Noam <span class="chalk-underline">Borgnia</span></h1>
         <p class="lede">
-          I study <strong>geometric probability theory</strong> as applied to
-          dynamical systems in statistical physics and quantum information.
-        </p>
-        <p class="equation-note">
-          where order emerges from
-          <span class="ineq"><Math tex={"\\langle \\mathcal{O} \\rangle = \\lim_{T\\to\\infty} \\tfrac{1}{T}\\int_0^T \\mathcal{O}(\\phi_t\\,x)\\,dt"} /></span>
+          I study <strong>probability and mathematical statistical mechanics</strong>,
+          focusing on how interactions at the microscopic level give rise to large-scale collective behavior.
         </p>
       </div>
     </div>
@@ -58,20 +49,9 @@ const pillars = [
       <a href={p.href} class="note-card pillar" style={`--c:${p.accent}`}>
         <span class="kicker">{p.kicker}</span>
         <h3>{p.title}</h3>
-        <p>{p.blurb}</p>
         <span class="go">open &rarr;</span>
       </a>
     ))}
-  </section>
-
-  <section class="intro">
-    <h2>The board</h2>
-    <p>
-      This site is a working chalkboard. The research is the main theorem; the
-      code is the scratch work that convinced me it was true; the writing is how
-      I explain it to myself; and the teaching is how I explain it to everyone
-      else. Pick a corner of the board and start reading.
-    </p>
   </section>
 </Base>
 
@@ -107,15 +87,6 @@ const pillars = [
   .hero h1 { font-size: clamp(3rem, 9vw, 5.5rem); margin: 0; }
   .lede { font-size: clamp(1.1rem, 2.4vw, 1.45rem); max-width: 32ch; color: var(--chalk); }
   .lede strong { color: var(--accent); font-weight: 600; }
-  .equation-note {
-    font-family: var(--font-body);
-    font-style: italic;
-    font-size: 1rem;
-    color: var(--chalk-faint);
-    margin-top: 1.2rem;
-  }
-  .ineq { display: inline-block; margin-left: 0.3rem; }
-
   .pillars {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* symmetric 2x2 */
@@ -142,7 +113,5 @@ const pillars = [
     color: var(--chalk-faint);
   }
   .pillar:hover .go { color: var(--c); }
-
-  .intro { margin: 3rem 0 1rem; }
 </style>
 

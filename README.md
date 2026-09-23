@@ -8,7 +8,7 @@ Chalkboard/notebook aesthetic, built with [Astro](https://astro.build) +
 
 A working chalkboard. Four pillars:
 
-- **Research** — geometric probability & dynamical systems
+- **Research** — probability and mathematical statistical mechanics
 - **Code & Simulation** — numerical experiments and visualizations
 - **Writing** — expository notes and essays
 - **Teaching** — courses and materials

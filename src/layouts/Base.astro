@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 const { title, description } = Astro.props;
 const siteName = 'Noam Borgnia';
 const fullTitle = title ? `${title} · ${siteName}` : siteName;
-const desc = description ?? 'Noam Borgnia — Master\u2019s student in mathematical physics. Geometric probability theory applied to dynamical systems in statistical physics and quantum information.';
+const desc = description ?? 'Noam Borgnia — I study probability and mathematical statistical mechanics, focusing on how interactions at the microscopic level give rise to large-scale collective behavior.';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og.png', Astro.site);
 ---

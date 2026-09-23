@@ -9,13 +9,9 @@ const entries = (await getCollection('teaching', (e) => !e.data.draft))
 <Base title="Teaching" description="Courses, problem sets, and teaching materials.">
   <header class="page-head">
     <h1>Teaching</h1>
-    <p class="sub">
-      Courses, problem sets, and notes built to make hard things feel
-      inevitable rather than miraculous.
-    </p>
   </header>
   <div class="list">
-    {entries.length === 0 && <p class="empty">Courses and materials will appear here.</p>}
+    {entries.length === 0 && <p class="empty">No entries yet.</p>}
     {entries.map((e) => (
       <EntryCard
         href={`/teaching/${e.id}/`}
@@ -31,7 +27,6 @@ const entries = (await getCollection('teaching', (e) => !e.data.draft))
 <style>
   .page-head { margin: 1.5rem 0 2rem; }
   .page-head h1 { color: var(--accent-4); }
-  .sub { color: var(--chalk-dim); max-width: 60ch; font-size: 1.1rem; }
   .list { display: grid; gap: 1.1rem; }
   .empty { color: var(--chalk-faint); font-style: italic; }
 </style>
