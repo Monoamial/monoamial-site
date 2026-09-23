@@ -1,5 +1,5 @@
 ---
-title: "Cluster–cluster aggregation: growth without explosion"
+title: "Cluster–cluster aggregation"
 description: "My Master's thesis under Noam Berger: how slowly moving clusters grow, what geometry they leave behind, and how momentum changes the dynamics."
 date: 2026-09-23
 status: "in progress"
@@ -44,7 +44,7 @@ $$
 
 The first term creates mass $m$ by joining smaller clusters; the second removes it through further mergers. The kernel $K(i,j)$ describes how readily masses $i$ and $j$ meet and stick. See [Aldous’s review](https://doi.org/10.2307/3318611) for the mean-field framework.
 
-A natural well-mixed candidate for our model is $K(i,j)=i^{-\alpha}j+j^{-\alpha}i$: a cluster’s attempt rate is weighted by the amount of material it could encounter. Its scaling suggests a characteristic mass of order $t^{1/\alpha}$, as discussed in the [cluster–cluster preprint](https://arxiv.org/html/2608.05105v1#S1.SS4). On the lattice, however, encounters also depend on shapes, exposed boundaries, and correlations between neighbours. Turning that prediction into a theorem is the central difficulty.
+A natural well-mixed candidate for our model is $K(i,j)=i^{-\alpha}j+j^{-\alpha}i$: a cluster’s attempt rate is weighted by the amount of material it could encounter. Its scaling suggests a characteristic mass of order $t^{1/\alpha}$. On the lattice, however, encounters also depend on shapes, exposed boundaries, and correlations between neighbours. Turning that prediction into a theorem is the central difficulty.
 
 ## When does Smoluchowski emerge?
 
@@ -56,9 +56,9 @@ These results concern Brownian point particles. Our lattice clusters retain thei
 
 ## How fast do clusters grow?
 
-For the main conjecture, start with one particle at every site. Write $S_t=|C_0(t)|$ for the mass of the cluster containing the origin, and $M_k(t)=\mathbb E[S_t^k]$. This samples a cluster through a particle, so larger clusters are more likely to be seen. Higher moments detect rare, unusually large aggregates.
+For the main conjecture, start with one particle at every site. Write $M_k(t)=\mathbb E[|C_0(t)|^k]$ for the $k$th moment of the mass of the cluster containing the origin. This samples a cluster through a particle, so larger clusters are more likely to be seen. Higher moments detect rare, unusually large aggregates.
 
-**Conjecture.** A moment version of the [growth question posed by Berger, Procaccia, Schmid and Sharon](https://arxiv.org/html/2608.05105v1#S1.SS5) is: for every $d\ge2$, $\alpha>0$, and $k>0$,
+**Conjecture.** Motivated by the scaling of the Smoluchowski equations, we expect that for every $d\ge2$, $\alpha>0$, and $k>0$,
 
 $$
 M_k(t)\asymp(1+t)^{k/\alpha}.
@@ -80,14 +80,14 @@ The upper argument controls how far an aggregate can spread by tracing its merge
 
 In dimensions $d\ge2$, with vacancies, we also obtain polynomial bounds for all positive moments in a substantial range of $\alpha$. Extending these to every $\alpha>0$, and finding sharp powers, remain open.
 
-The table collects our current bounds for $k\ge1$ and $\alpha>0$. Set $T=1+t$; constants multiplying the bounds are suppressed. With vacancies, $M_k$ is conditioned on the origin being occupied at time $t$.
+The table collects our current bounds for $k\ge1$ and $\alpha>0$; constants multiplying the bounds are suppressed. With vacancies, $M_k$ is conditioned on the origin being occupied at time $t$.
 
 <div className="research-results-scroll" role="region" aria-label="Current moment bounds by regime" tabIndex={0}>
 
 | Initial occupancy | Dimension | Slowdown range | Lower bound for $M_k(t)$ | Upper bound for $M_k(t)$ |
 | --- | --- | --- | --- | --- |
-| Full ($p=1$) | $d\ge2$ | All $\alpha>0$ | $T^{k/\alpha}$ | $T^{dk/\alpha+\varepsilon}$, every $\varepsilon>0$ |
-| Vacancies ($0<p<1$) | $d\ge2$ | $\alpha>\beta_d$ | $T^{k/(\alpha+2/d)}$ | Polynomial in $T$ |
+| Full ($p=1$) | $d\ge2$ | All $\alpha>0$ | $(1+t)^{k/\alpha}$ | $(1+t)^{dk/\alpha+\varepsilon}$, every $\varepsilon>0$ |
+| Vacancies ($0<p<1$) | $d\ge2$ | $\alpha>\beta_d$ | $(1+t)^{k/(\alpha+2/d)}$ | Polynomial in $1+t$ |
 
 </div>
 
@@ -125,7 +125,7 @@ $$
 
 In two dimensions, the mean cluster size therefore grows at least as $t^{2/3}$. Our upper bounds guarantee finite moments but do not yet give a sharp growth law.
 
-For bounded velocities, we also obtain short-time results with sufficiently few vacancies, and all-time results when motion is restricted to one coordinate axis. A general all-time construction with vacancies in higher dimensions remains open.
+We are continuing to work on the momentum-driven case.
 
 ## References
 

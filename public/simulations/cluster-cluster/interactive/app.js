@@ -234,7 +234,7 @@ class SimulationView {
       }
     } else {
       // Advance in physical model time: changing alpha changes visible waiting.
-      this.targetTime = Math.min(this.engine.time + 1, this.targetTime + elapsed * 1.4 / 1000);
+      this.targetTime = Math.min(this.engine.time + 1, this.targetTime + elapsed * 2.8 / 1000);
       while (this.engine.clusterCount > 1 && performance.now() < deadline) {
         if (this.engine.advanceTo(this.targetTime, { maxEvents: 100 }).reached) break;
       }
