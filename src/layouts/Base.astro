@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 const { title, description } = Astro.props;
 const siteName = 'Noam Borgnia';
 const fullTitle = title ? `${title} · ${siteName}` : siteName;
-const desc = description ?? 'Noam Borgnia — master’s student at the Technical University of Munich. I study probability and mathematical statistical mechanics, focusing on how interactions at the microscopic level give rise to large-scale collective behavior.';
+const desc = description ?? 'Noam Borgnia — master’s student at the Technical University of Munich. Interested in how local interactions become collective laws, when simpler equations capture them, and how computational complexity shapes what we can predict.';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og.png', Astro.site);
 ---
