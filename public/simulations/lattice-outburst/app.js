@@ -94,13 +94,15 @@ function update({ announce = false } = {}) {
   const time = model.time < 100 ? model.time.toFixed(3) : model.time.toFixed(1);
   $('#site-count').textContent = count;
   $('#model-time').textContent = time;
-  let description = 'Start at the origin. Press Run, or advance one outburst with Step.';
+  let description = 'One infected site at the origin.';
   if (model.lastBurst) {
     const { center, radius, adds } = model.lastBurst;
     description = `Radius ${radius} at (${center[0]}, ${center[1]}) · ` +
       (adds.length ? `${adds.length.toLocaleString()} new sites.` : 'Already infected; no new sites.');
   }
   if (model.stopped) description = model.stopped;
+  $('#limit-status').hidden = !model.stopped;
+  $('#limit-status').textContent = model.stopped;
   $('#event-description').textContent = description;
   canvas.setAttribute('aria-label', `Lattice cluster: ${count} infected sites at model time ${time}. ${description}`);
   if (announce || (running && performance.now() - lastAnnouncementAt > 5000)) {
