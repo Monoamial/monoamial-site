@@ -1,0 +1,128 @@
+---
+title: "Cluster–cluster aggregation: growth without explosion"
+description: "My Master's thesis under Noam Berger: how slowly moving clusters grow, what geometry they leave behind, and how momentum changes the dynamics."
+date: 2026-09-23
+status: "in progress"
+tags: ["probability", "aggregation", "statistical-physics"]
+---
+
+What happens when particles wander, stick together, and slow down as they grow? A simple local rule produces a system whose long-time behaviour is surprisingly hard to understand.
+
+This is the subject of my **Master’s thesis under the supervision of Noam Berger**. I study cluster–cluster aggregation on the integer lattice $\mathbb Z^d$, focusing on cluster growth, the geometry of the aggregate, and variants driven by momentum. The results described below are current thesis work; detailed writeups are in preparation.
+
+## The model
+
+Initially, each lattice site contains one particle with probability $p$, independently. A cluster of $m$ particles attempts to move one lattice step at rate $m^{-\alpha}$, choosing a coordinate direction uniformly. Larger clusters therefore move more slowly when $\alpha>0$.
+
+If the translated cluster would overlap another cluster, the move is cancelled. Instead, one blocking contact in the chosen direction is selected uniformly, and a bond joins the two clusters. Each collision adds exactly one bond, so every cluster is a tree.
+
+The fully occupied case, $p=1$, is especially useful: every attempt is blocked, so particles stay at their original sites while their clusters merge.
+
+<figure className="research-figure-placeholder" id="figure-dynamics" aria-labelledby="caption-dynamics">
+  <div className="research-figure-placeholder__panel">Interactive simulation planned · Watch clusters move and merge</div>
+  <figcaption id="caption-dynamics">Vary the initial density and slowdown parameter. At full occupancy, watch bonds appear while the particles remain fixed.</figcaption>
+</figure>
+
+**Can an infinite cluster form in finite time?** Berger, Procaccia, Schmid and Sharon proved that it cannot when $\alpha\ge0$, starting from a stationary, ergodic configuration of finite clusters. This includes the entire $\alpha>0$ regime studied here. Their [nonexplosion theorem](https://arxiv.org/abs/2608.05105) makes it possible to ask the next question: how large are the finite clusters? Finiteness alone does not control their expected size.
+
+## A mean-field picture
+
+One way to simplify aggregation is to keep track only of how many clusters have each mass. Let $c_m(t)$ be the number density of mass-$m$ clusters. The **Smoluchowski coagulation equations** are
+
+$$
+\frac{dc_m}{dt}
+=\frac12\sum_{i+j=m}K(i,j)c_i c_j
+-c_m\sum_{j\ge1}K(m,j)c_j.
+$$
+
+The first term creates mass $m$ by joining smaller clusters; the second removes it through further mergers. The kernel $K(i,j)$ describes how readily masses $i$ and $j$ meet and stick. See [Aldous’s review](https://doi.org/10.2307/3318611) for the mean-field framework.
+
+A natural well-mixed candidate for our model is $K(i,j)=i^{-\alpha}j+j^{-\alpha}i$: a cluster’s attempt rate is weighted by the amount of material it could encounter. Its scaling suggests a characteristic mass of order $t^{1/\alpha}$, as discussed in the [cluster–cluster preprint](https://arxiv.org/html/2608.05105v1#S1.SS4). On the lattice, however, encounters also depend on shapes, exposed boundaries, and correlations between neighbours. Turning that prediction into a theorem is the central difficulty.
+
+## When does Smoluchowski emerge?
+
+Hammond and Rezakhanlou rigorously connected microscopic aggregation to the **spatial** Smoluchowski equations, which add diffusion, $D_m\Delta c_m$, to the equation above. They studied Brownian particles carrying mass, with a shrinking interaction range and an increasing particle number in a dilute scaling limit.
+
+Their results cover [dimensions three and higher](https://doi.org/10.1007/s00205-006-0033-5) and, with a different logarithmic scaling, [dimension two](https://doi.org/10.1007/s10955-005-0105-1). The limiting densities solve the coagulation–diffusion equations; when the solution is unique, this identifies the limit. The effective collision kernel accounts for the depletion of nearby pairs by earlier collisions.
+
+These results concern Brownian point particles. Our lattice clusters retain their extended shapes after every merger, so a Smoluchowski limit for them requires a separate argument. This comparison helps isolate the question: **how much of aggregation can mass alone describe, and when does geometry matter?**
+
+## How fast do clusters grow?
+
+For the main conjecture, start with one particle at every site. Write $S_t=|C_0(t)|$ for the mass of the cluster containing the origin, and $M_k(t)=\mathbb E[S_t^k]$. This samples a cluster through a particle, so larger clusters are more likely to be seen. Higher moments detect rare, unusually large aggregates.
+
+**Conjecture.** A moment version of the [growth question posed by Berger, Procaccia, Schmid and Sharon](https://arxiv.org/html/2608.05105v1#S1.SS5) is: for every $d\ge2$, $\alpha>0$, and $k>0$,
+
+$$
+M_k(t)\asymp(1+t)^{k/\alpha}.
+$$
+
+Here $\asymp$ means upper and lower bounds by constant multiples, with constants allowed to depend on $d,\alpha,k$. The intuition is that a mass-$m$ cluster waits roughly $m^\alpha$ between its own attempts; mergers with comparable clusters then suggest $m\sim t^{1/\alpha}$. The challenge is that a cluster can also grow by receiving many smaller neighbours.
+
+**Current progress.** Our full-occupancy bounds give, for every $\varepsilon>0$,
+
+$$
+(1+\alpha t)^{k/\alpha}
+\;\le\; M_k(t)
+\;\le\; C_{d,\alpha,k,\varepsilon}(1+t)^{dk/\alpha+\varepsilon}.
+$$
+
+Thus every positive moment grows at most polynomially for every $\alpha>0$. The lower bound has the conjectured exponent; the upper bound still loses a factor of $d$, and an arbitrarily small additional power.
+
+The upper argument controls how far an aggregate can spread by tracing its merger history. Converting spatial extent into mass introduces the dimension factor. More recent estimates control mass directly for growth transmitted by sources below a fixed size. They give exponential tails for that auxiliary growth, but their dependence on the size cutoff is still too costly to close the conjecture. The missing estimate concerns the correlated influx of small clusters into large receivers.
+
+In dimensions $d\ge2$, with vacancies, we also obtain polynomial bounds for all positive moments in a substantial range of $\alpha$. Extending these to every $\alpha>0$, and finding sharp powers, remain open.
+
+<details>
+<summary>The current range with vacancies</summary>
+
+For every fixed density $p\in(0,1]$, all positive occupied-site moments grow at most polynomially when
+
+$$
+\alpha>3-2\sqrt2\quad(d=2),\qquad
+\alpha>1-\frac1{d-1}\quad(d\ge3).
+$$
+
+These are sufficient ranges; the endpoints remain open. With vacancies, the moment is conditioned on the origin being occupied at the observation time. The upper powers here are not the sharper full-occupancy powers displayed above.
+
+</details>
+
+<figure className="research-figure-placeholder" id="figure-moments" aria-labelledby="caption-moments">
+  <div className="research-figure-placeholder__panel">Interactive plot planned · Does rescaled cluster growth level off?</div>
+  <figcaption id="caption-moments">Compare particle-sampled moments with the conjectured scale across independent runs. The display will identify finite-system saturation separately from the growth regime.</figcaption>
+</figure>
+
+## The geometry left behind
+
+At full occupancy, merger bonds accumulate into a limiting spanning forest. Our arguments show that every component is infinite and has only one or two routes to infinity, in the precise sense of tree ends. A simple random walk on each component returns to its starting point almost surely—even in high ambient dimension.
+
+Whether this forest is connected remains open. In two dimensions, we can connect that question to growth: the conjectured first-moment upper bound would force the interfaces between distinct clusters to disappear, and hence imply connectivity. This is one reason sharp moment estimates matter beyond cluster size.
+
+<figure className="research-figure-placeholder" id="figure-geometry" aria-labelledby="caption-geometry">
+  <div className="research-figure-placeholder__panel">Interactive view planned · Explore the merger tree</div>
+  <figcaption id="caption-geometry">Switch between cluster colours and merger bonds, then compare lattice distance with the unique tree path between two connected particles.</figcaption>
+</figure>
+
+## Can momentum explain the slowdown?
+
+We also study models in which particles carry random initial momenta. A cluster has mass $m$, total momentum $P$, and average velocity mark $v=P/m$. Mergers conserve mass and momentum:
+
+$$
+v_{\mathrm{new}}=\frac{m v+n w}{m+n}.
+$$
+
+One variant uses symmetric jumps at total rate $|v|^2$; another favours the direction of $v$ and has that mean drift when unblocked. Both dissipate kinetic energy on merging.
+
+For a predetermined set of $m$ independent, identically distributed centred marks with finite variance, the expected squared average is proportional to $1/m$, suggesting a link to $\alpha=1$ for the symmetric-jump variant. Actual clusters are selected by the dynamics, so this cancellation cannot simply be assumed for them.
+
+At full occupancy, our current arguments construct infinite-volume versions and prove that all positive cluster-size moments are finite at every finite time for both variants, for independent, identically distributed centred marks that are bounded or Gaussian. Their sharp growth laws, and general higher-dimensional systems with vacancies, remain open.
+
+## References
+
+1. N. Berger, E. B. Procaccia, D. Schmid and D. Sharon. *Cluster-Cluster model in $\mathbb Z^d$* (2026). [arXiv:2608.05105](https://arxiv.org/abs/2608.05105).
+2. D. J. Aldous. *Deterministic and stochastic models for coalescence (aggregation and coagulation): a review of the mean-field theory for probabilists*. **Bernoulli 5**, 3–48 (1999). [Paper](https://doi.org/10.2307/3318611).
+3. A. Hammond and F. Rezakhanlou. *The Kinetic Limit of a System of Coagulating Brownian Particles*. **Archive for Rational Mechanics and Analysis 185**, 1–67 (2007). [Paper](https://doi.org/10.1007/s00205-006-0033-5) · [Open preprint](https://arxiv.org/abs/math/0408395).
+4. A. Hammond and F. Rezakhanlou. *Kinetic Limit for a System of Coagulating Planar Brownian Particles*. **Journal of Statistical Physics 124**, 997–1040 (2006). [Paper](https://doi.org/10.1007/s10955-005-0105-1) · [Open preprint](https://arxiv.org/abs/math/0507522).
+5. A. Hammond. *Coagulation and diffusion: A probabilistic perspective on the Smoluchowski PDE*. **Probability Surveys 14**, 205–288 (2017). [Survey](https://doi.org/10.1214/15-PS263) · [Open preprint](https://arxiv.org/abs/1401.0829).
+
+The growth, geometry, and momentum results presented as our work above refer to my ongoing thesis notes, rather than to the external papers in this list.
